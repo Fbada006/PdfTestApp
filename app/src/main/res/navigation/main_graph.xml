@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_graph.xml"
+    app:startDestination="@id/pdfListFragment">
+
+    <fragment
+        android:id="@+id/pdfListFragment"
+        android:name="com.ferdinand.pdftestapp.main.PdfListFragment"
+        android:label="@string/label_all_pdf_files" />
+</navigation>

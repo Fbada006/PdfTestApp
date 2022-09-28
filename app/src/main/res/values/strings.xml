@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PdfTestApp</string>
+    <string name="label_all_pdf_files">All Pdf files</string>
 </resources>
