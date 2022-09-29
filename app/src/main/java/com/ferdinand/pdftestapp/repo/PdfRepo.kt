@@ -1,8 +1,9 @@
 package com.ferdinand.pdftestapp.repo
 
 import com.ferdinand.pdftestapp.models.PdfFile
+import com.ferdinand.pdftestapp.utils.Resource
 
 interface PdfRepo {
 
-    suspend fun getPdfList(): List<PdfFile>
+    suspend fun getPdfList(): Resource<List<PdfFile>>
 }

@@ -6,6 +6,7 @@ import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.core.net.toUri
 import com.ferdinand.pdftestapp.models.PdfFile
+import com.ferdinand.pdftestapp.utils.Resource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -38,33 +39,37 @@ class PdfRepoImpl @Inject constructor(
 
     /*
     * Since we are not sure how long this query will take, it makes sense to wrap it around a coroutine and take
-    * this functionality the main thread to the IO one instead
+    * this functionality off the main thread to the IO one instead
     * */
-    override suspend fun getPdfList(): List<PdfFile> {
+    override suspend fun getPdfList(): Resource<List<PdfFile>> {
         return withContext(dispatcher) {
-            val pdfList = mutableListOf<PdfFile>()
+            try {
+                val pdfList = mutableListOf<PdfFile>()
 
-            context.contentResolver.query(collection, projection, selection, selectionArgs, sortOrder).use { cursor ->
-                cursor?.let {
-                    if (it.moveToFirst()) {
+                context.contentResolver.query(collection, projection, selection, selectionArgs, sortOrder).use { cursor ->
+                    cursor?.let {
+                        if (it.moveToFirst()) {
 
-                        val columnData = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
-                        val columnName = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME)
+                            val columnData = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
+                            val columnName = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME)
 
-                        while (it.moveToNext()) {
-                            val pathData = cursor.getString(columnData)
-                            val isDownloadData = isDownloadData(pathData)
-                            if (isDownloadData) {
-                                val pdfName = cursor.getString(columnName)
-                                val pdfUri = File(pathData).toUri()
-                                pdfList += PdfFile(pdfName = pdfName, uri = pdfUri)
+                            while (it.moveToNext()) {
+                                val pathData = cursor.getString(columnData)
+                                val isDownloadData = isDownloadData(pathData)
+                                if (isDownloadData) {
+                                    val pdfName = cursor.getString(columnName)
+                                    val pdfUri = File(pathData).toUri()
+                                    pdfList += PdfFile(pdfName = pdfName, uri = pdfUri)
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            pdfList
+                Resource.Success(pdfList)
+            } catch (exception: Exception) {
+                Resource.Error(exception)
+            }
         }
     }
 
