@@ -6,6 +6,7 @@ import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.core.net.toUri
 import com.ferdinand.pdftestapp.models.PdfFile
+import com.ferdinand.pdftestapp.utils.EmptyListException
 import com.ferdinand.pdftestapp.utils.Resource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +67,11 @@ class PdfRepoImpl @Inject constructor(
                     }
                 }
 
-                Resource.Success(pdfList)
+                if (pdfList.isNotEmpty()) {
+                    Resource.Success(pdfList)
+                } else {
+                    Resource.Error(EmptyListException())
+                }
             } catch (exception: Exception) {
                 Resource.Error(exception)
             }
