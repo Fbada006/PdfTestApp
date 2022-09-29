@@ -4,5 +4,6 @@ import android.net.Uri
 
 data class PdfFile(
     val pdfName: String,
-    val uri: Uri
+    val uri: Uri,
+    val isFavourite: Boolean = false
 )
