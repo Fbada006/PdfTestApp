@@ -14,7 +14,6 @@ import javax.inject.Inject
 @HiltViewModel
 class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel() {
 
-    val placeholder = MutableStateFlow("Hello Android").asStateFlow()
     private val mutablePdfQueryState = MutableStateFlow(PdfQueryState())
     val pdfQueryState = mutablePdfQueryState.asStateFlow()
 

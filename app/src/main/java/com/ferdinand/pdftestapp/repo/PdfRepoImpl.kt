@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
+import androidx.core.database.getStringOrNull
 import androidx.core.net.toUri
 import com.ferdinand.pdftestapp.models.PdfFile
 import com.ferdinand.pdftestapp.utils.EmptyListException
@@ -20,7 +21,6 @@ class PdfRepoImpl @Inject constructor(
 ) : PdfRepo {
 
     private val projection = arrayOf(
-        MediaStore.Files.FileColumns._ID,
         MediaStore.Files.FileColumns.DISPLAY_NAME,
         MediaStore.Files.FileColumns.DATE_ADDED,
         MediaStore.Files.FileColumns.DATA,
@@ -58,8 +58,9 @@ class PdfRepoImpl @Inject constructor(
                                 val pathData = cursor.getString(columnData)
                                 val isDownloadData = isDownloadData(pathData)
                                 if (isDownloadData) {
-                                    val pdfName = cursor.getString(columnName)
+                                    val displayName = cursor.getStringOrNull(columnName)
                                     val pdfUri = File(pathData).toUri()
+                                    val pdfName = getPdfDisplayName(displayName, pathData)
                                     pdfList += PdfFile(pdfName = pdfName, uri = pdfUri)
                                 }
                             }
@@ -76,6 +77,14 @@ class PdfRepoImpl @Inject constructor(
                 Resource.Error(exception)
             }
         }
+    }
+
+    /*
+    * Some older versions of android may return a null display name and even perhaps newer versions
+    * as well, which is why this extra check is so important. The path data has the name of the file as well
+    * */
+    private fun getPdfDisplayName(displayName: String?, pathData: String): String {
+        return displayName ?: pathData.substringAfterLast(DELIMITER_FORWARD_SLASH_CHAR)
     }
 
     /*
