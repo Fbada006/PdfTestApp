@@ -5,4 +5,6 @@
     <string name="search">Search</string>
     <string name="favourite">Favourite</string>
     <string name="search_icon">Search Icon</string>
+    <string name="error_title">Whoops</string>
+    <string name="error_action">OK</string>
 </resources>

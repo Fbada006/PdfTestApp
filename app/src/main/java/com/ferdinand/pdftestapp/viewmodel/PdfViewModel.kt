@@ -3,6 +3,7 @@ package com.ferdinand.pdftestapp.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.models.PdfFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
 import com.ferdinand.pdftestapp.repo.PdfRepo
@@ -45,7 +46,25 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
-    fun onExecuteSearch() {
+    fun handleEvent(event: PdfEvent) {
+        when (event) {
+            PdfEvent.ErrorDismissed -> {
+                dismissError()
+            }
+            is PdfEvent.OnFavouriteEvent -> {
+                favouritePdf(event.pdfFile)
+            }
+            PdfEvent.SearchEvent -> {
+                searchFiles()
+            }
+        }
+    }
+
+    private fun favouritePdf(pdfFile: PdfFile) {
+        TODO("Not yet implemented")
+    }
+
+    private fun searchFiles() {
         TODO("Not yet implemented")
     }
 
@@ -53,7 +72,9 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         this.query.value = query
     }
 
-    fun onFavouriteClicked(pdf: PdfFile) {
-        TODO("Not yet implemented")
+    private fun dismissError() {
+        mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
+            error = null
+        )
     }
 }

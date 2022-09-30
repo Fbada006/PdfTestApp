@@ -38,7 +38,7 @@ class PdfListFragment : Fragment() {
                         topBar = {
                             SearchAppBar(query = query,
                                 onQueryChanged = viewModel::onQueryChanged,
-                                onExecuteSearch = { viewModel.onExecuteSearch() })
+                                handleEvent = { event -> viewModel.handleEvent(event) })
                         }
                     ) {
                         Box(
@@ -50,8 +50,8 @@ class PdfListFragment : Fragment() {
                             onPdfClick = {
                                 // Trigger Navigation
                             },
-                            onFavouriteClick = { pdf ->
-                                viewModel.onFavouriteClicked(pdf)
+                            handleEvent = { event ->
+                                viewModel.handleEvent(event)
                             },
                             modifier = Modifier
                                 .padding(4.dp)
