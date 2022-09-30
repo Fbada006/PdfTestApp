@@ -24,13 +24,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.ferdinand.pdftestapp.R
+import com.ferdinand.pdftestapp.models.PdfEvent
 
 @ExperimentalComposeUiApi
 @Composable
 fun SearchAppBar(
     query: String,
     onQueryChanged: (String) -> Unit,
-    onExecuteSearch: () -> Unit,
+    handleEvent: (event: PdfEvent) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Surface(
@@ -53,7 +54,7 @@ fun SearchAppBar(
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            onExecuteSearch()
+                            handleEvent(PdfEvent.SearchEvent)
                             keyboardController?.hide()
                         },
                     ),

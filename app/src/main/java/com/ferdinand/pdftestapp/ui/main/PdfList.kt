@@ -14,14 +14,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.models.PdfFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
+import com.ferdinand.pdftestapp.utils.errorToString
 
 @Composable
 fun PdfList(
     pdfQueryState: PdfQueryState,
     onPdfClick: (pdf: PdfFile) -> Unit,
-    onFavouriteClick: (pdf: PdfFile) -> Unit,
+    handleEvent: (event: PdfEvent) -> Unit,
     modifier: Modifier
 ) {
     val pdfList = pdfQueryState.data
@@ -46,7 +48,9 @@ fun PdfList(
                         items(items = it) { pdf ->
                             PdfItem(
                                 pdfFile = pdf,
-                                onFavouriteClick = onFavouriteClick,
+                                onFavouriteClick = { file ->
+                                    handleEvent(PdfEvent.OnFavouriteEvent(file))
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
@@ -59,6 +63,15 @@ fun PdfList(
                             Spacer(modifier = Modifier.padding(2.dp))
                         }
                     }
+                }
+
+                pdfQueryState.error?.let {
+                    ErrorDialog(
+                        error = it.errorToString(),
+                        dismissError = {
+                            handleEvent(PdfEvent.ErrorDismissed)
+                        }
+                    )
                 }
             }
         }
