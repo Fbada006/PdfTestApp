@@ -1,7 +1,9 @@
 package com.ferdinand.pdftestapp.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ferdinand.pdftestapp.models.PdfFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
 import com.ferdinand.pdftestapp.repo.PdfRepo
 import com.ferdinand.pdftestapp.utils.Resource
@@ -16,6 +18,8 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     private val mutablePdfQueryState = MutableStateFlow(PdfQueryState())
     val pdfQueryState = mutablePdfQueryState.asStateFlow()
+
+    val query = mutableStateOf("")
 
     init {
         getAllPdfFiles()
@@ -33,11 +37,23 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
                 }
                 is Resource.Success -> {
                     mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
-                        isLoading = true,
+                        isLoading = false,
                         data = pdfResource.data
                     )
                 }
             }
         }
+    }
+
+    fun onExecuteSearch() {
+        TODO("Not yet implemented")
+    }
+
+    fun onQueryChanged(query: String) {
+        this.query.value = query
+    }
+
+    fun onFavouriteClicked(pdf: PdfFile) {
+        TODO("Not yet implemented")
     }
 }

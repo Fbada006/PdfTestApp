@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">PdfTestApp</string>
     <string name="label_all_pdf_files">All Pdf files</string>
+    <string name="default_time_message">Time not found</string>
+    <string name="search">Search</string>
+    <string name="favourite">Favourite</string>
+    <string name="search_icon">Search Icon</string>
 </resources>
