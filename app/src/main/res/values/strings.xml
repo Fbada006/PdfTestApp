@@ -13,4 +13,5 @@
     <string name="button_request_permission">Grant Permissions</string>
     <string name="button_close">Close</string>
     <string name="toast_storage_permissions">Storage permissions are needed for the app to function. Please enable them.</string>
+    <string name="cd_back_button">Back button</string>
 </resources>
