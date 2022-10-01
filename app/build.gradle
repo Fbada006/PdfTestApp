@@ -3,16 +3,18 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'kotlin-parcelize'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
     namespace 'com.ferdinand.pdftestapp'
-    compileSdk 33
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.ferdinand.pdftestapp"
         minSdk 23
-        targetSdk 33
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 
@@ -39,7 +41,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion '1.3.1'
     }
     packagingOptions {
         resources {

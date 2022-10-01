@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.ui.composables.RequestPermission
 import com.ferdinand.pdftestapp.ui.theme.PdfTestAppTheme
@@ -92,8 +93,10 @@ class PdfListFragment : Fragment() {
                             if (arePermissionsGranted) {
                                 PdfList(
                                     pdfQueryState = pdfQueryState,
-                                    onPdfClick = {
-                                        // Trigger Navigation
+                                    onPdfClick = { pdfFile ->
+                                        findNavController().navigate(
+                                            PdfListFragmentDirections.actionPdfListFragmentToPdfFragment(pdfFile)
+                                        )
                                     },
                                     handleEvent = { event ->
                                         viewModel.handleEvent(event)
