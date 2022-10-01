@@ -14,6 +14,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.models.PdfFile
@@ -29,6 +30,7 @@ fun PdfList(
 ) {
     val pdfList = pdfQueryState.data
     val state = rememberLazyListState()
+    val context = LocalContext.current
 
     MaterialTheme {
         Box(
@@ -70,7 +72,7 @@ fun PdfList(
 
                 pdfQueryState.error?.let {
                     ErrorDialog(
-                        error = it.errorToString(),
+                        error = it.errorToString(context),
                         dismissError = {
                             handleEvent(PdfEvent.ErrorDismissed)
                         }
