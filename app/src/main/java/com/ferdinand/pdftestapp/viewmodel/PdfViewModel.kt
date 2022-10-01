@@ -22,12 +22,14 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     val query = mutableStateOf("")
 
+    val arePermissionsGranted = mutableStateOf(false)
+
     init {
         getAllPdfFiles()
     }
 
-    private fun getAllPdfFiles() {
-        mutablePdfQueryState.value = mutablePdfQueryState.value.copy(isLoading = true)
+    fun getAllPdfFiles() {
+        mutablePdfQueryState.value = mutablePdfQueryState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
             when (val pdfResource = pdfRepo.getPdfList()) {
                 is Resource.Error -> {
@@ -70,6 +72,10 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     fun onQueryChanged(query: String) {
         this.query.value = query
+    }
+
+    fun onPermissionsStateChanged(value: Boolean) {
+        this.arePermissionsGranted.value = value
     }
 
     private fun dismissError() {
