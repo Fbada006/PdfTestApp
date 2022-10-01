@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">PdfTestApp</string>
     <string name="label_all_pdf_files">All Pdf files</string>
+    <string name="default_time_message">Time not found</string>
+    <string name="search">Search</string>
+    <string name="favourite">Favourite</string>
+    <string name="search_icon">Search Icon</string>
+    <string name="error_title">Whoops</string>
+    <string name="error_action">OK</string>
+    <string name="empty_list">There is no data to display at the moment. Confirm that you have PDF files in your download folder and try again. Thank you.</string>
+    <string name="something_went_wrong">Something went wrong in getting your PDF files. Please try again. Thank you.</string>
+    <string name="storage_permission_needed">The app needs storage access to function correctly. Without this, the app will not be able to get the PDF files on your device. If you wish to proceed, please click the Grant Permissions button. Otherwise close the app by clicking the Close button.</string>
+    <string name="button_request_permission">Grant Permissions</string>
+    <string name="button_close">Close</string>
+    <string name="toast_storage_permissions">Storage permissions are needed for the app to function. Please enable them.</string>
 </resources>

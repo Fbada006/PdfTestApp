@@ -6,6 +6,6 @@
 
     <fragment
         android:id="@+id/pdfListFragment"
-        android:name="com.ferdinand.pdftestapp.main.PdfListFragment"
+        android:name="com.ferdinand.pdftestapp.ui.main.PdfListFragment"
         android:label="@string/label_all_pdf_files" />
 </navigation>
