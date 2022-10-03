@@ -80,6 +80,26 @@ class PdfRepoImpl @Inject constructor(
     }
 
     /*
+    * Just like getting all the items above, we make use of coroutines to run the filter operation. For extra safety,
+    * a try catch is used just in case something goes wrong although it is unlikely
+    * */
+    override suspend fun getPdfListBasedOnQuery(pdfFiles: List<PdfFile>?, searchTerm: String): Resource<List<PdfFile>> {
+        return withContext(dispatcher) {
+            try {
+                val filteredList = pdfFiles?.filter { it.pdfName.contains(searchTerm, true) }
+
+                if (filteredList.isNullOrEmpty()) {
+                    Resource.Error(EmptyListException())
+                } else {
+                    Resource.Success(filteredList)
+                }
+            } catch (exception: Exception) {
+                Resource.Error(exception)
+            }
+        }
+    }
+
+    /*
     * Some older versions of android may return a null display name and even perhaps newer versions
     * as well, which is why this extra check is so important. The path data has the name of the file as well
     * */

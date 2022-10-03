@@ -1,0 +1,75 @@
+package com.ferdinand.pdftestapp.ui
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
+import com.ferdinand.pdftestapp.ui.main.PdfList
+import com.ferdinand.pdftestapp.ui.main.SearchAppBar
+import com.ferdinand.pdftestapp.ui.theme.PdfTestAppTheme
+import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+@ExperimentalComposeUiApi
+class SearchFragment : Fragment() {
+
+    private val viewModel: PdfViewModel by viewModels()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                PdfTestAppTheme {
+                    val pdfQueryState by viewModel.filteredPdfState.collectAsState()
+                    val query = viewModel.query.value
+
+                    Scaffold(
+                        topBar = {
+                            SearchAppBar(query = query,
+                                onQueryChanged = viewModel::onQueryChanged,
+                                onBackClicked = {
+                                    findNavController().navigateUp()
+                                },
+                                handleEvent = { event -> viewModel.handleEvent(event) })
+                        }
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .padding(it)
+                                .fillMaxSize()
+                        ) {
+                            PdfList(
+                                pdfQueryState = pdfQueryState,
+                                onPdfClick = { pdfFile ->
+                                    findNavController().navigate(
+                                        SearchFragmentDirections.actionSearchFragmentToPdfFragment(pdfFile)
+                                    )
+                                },
+                                handleEvent = { event ->
+                                    viewModel.handleEvent(event)
+                                },
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .fillMaxSize()
+                            )
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}

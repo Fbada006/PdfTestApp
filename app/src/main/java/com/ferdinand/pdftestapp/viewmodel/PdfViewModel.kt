@@ -20,6 +20,9 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
     private val mutablePdfQueryState = MutableStateFlow(PdfQueryState())
     val pdfQueryState = mutablePdfQueryState.asStateFlow()
 
+    private val mutableFilteredPdfState = MutableStateFlow(PdfQueryState())
+    val filteredPdfState = mutableFilteredPdfState.asStateFlow()
+
     val query = mutableStateOf("")
 
     val arePermissionsGranted = mutableStateOf(false)
@@ -56,8 +59,8 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
             is PdfEvent.OnFavouriteEvent -> {
                 favouritePdf(event.pdfFile)
             }
-            PdfEvent.SearchEvent -> {
-                searchFiles()
+            is PdfEvent.SearchEvent -> {
+                searchFiles(event.searchTerm)
             }
         }
     }
@@ -66,8 +69,26 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         TODO("Not yet implemented")
     }
 
-    private fun searchFiles() {
-        TODO("Not yet implemented")
+    private fun searchFiles(searchTerm: String) {
+        mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(isLoading = true, error = null, data = null)
+        viewModelScope.launch {
+            val pdfFiles = pdfQueryState.value.data
+
+            when (val pdfResource = pdfRepo.getPdfListBasedOnQuery(pdfFiles, searchTerm)) {
+                is Resource.Error -> {
+                    mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(
+                        isLoading = false,
+                        error = pdfResource.error
+                    )
+                }
+                is Resource.Success -> {
+                    mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(
+                        isLoading = false,
+                        data = pdfResource.data
+                    )
+                }
+            }
+        }
     }
 
     fun onQueryChanged(query: String) {
@@ -80,6 +101,10 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     private fun dismissError() {
         mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
+            error = null
+        )
+
+        mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(
             error = null
         )
     }

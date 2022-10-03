@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -14,7 +15,10 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -30,6 +34,7 @@ import com.ferdinand.pdftestapp.models.PdfEvent
 @Composable
 fun SearchAppBar(
     query: String,
+    onBackClicked: () -> Unit,
     onQueryChanged: (String) -> Unit,
     handleEvent: (event: PdfEvent) -> Unit
 ) {
@@ -38,13 +43,24 @@ fun SearchAppBar(
         modifier = Modifier
             .fillMaxWidth(),
         elevation = 8.dp,
+        color = MaterialTheme.colors.primarySurface
     ) {
         Column {
             Row(modifier = Modifier.fillMaxWidth()) {
+
+                IconButton(
+                    onClick = onBackClicked,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(end = 8.dp)
+                ) {
+                    Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.cd_back_button))
+                }
+
                 TextField(
                     modifier = Modifier
-                        .fillMaxWidth(.9f)
-                        .padding(8.dp),
+                        .weight(1f)
+                        .padding(4.dp),
                     value = query,
                     onValueChange = { onQueryChanged(it) },
                     label = { Text(text = stringResource(id = R.string.search)) },
@@ -54,7 +70,7 @@ fun SearchAppBar(
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            handleEvent(PdfEvent.SearchEvent)
+                            handleEvent(PdfEvent.SearchEvent(query))
                             keyboardController?.hide()
                         },
                     ),
