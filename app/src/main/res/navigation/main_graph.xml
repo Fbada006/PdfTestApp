@@ -6,6 +6,21 @@
 
     <fragment
         android:id="@+id/pdfListFragment"
-        android:name="com.ferdinand.pdftestapp.ui.main.PdfListFragment"
-        android:label="@string/label_all_pdf_files" />
+        android:name="com.ferdinand.pdftestapp.ui.main.PdfListFragment">
+        <action
+            android:id="@+id/action_pdfListFragment_to_pdfFragment"
+            app:destination="@id/pdfFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/pdfFragment"
+        android:name="com.ferdinand.pdftestapp.ui.details.PdfViewFragment">
+        <argument
+            android:name="pdfFile"
+            app:argType="com.ferdinand.pdftestapp.models.PdfFile" />
+    </fragment>
 </navigation>
