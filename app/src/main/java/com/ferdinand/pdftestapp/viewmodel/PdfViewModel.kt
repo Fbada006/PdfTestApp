@@ -45,7 +45,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
                 is Resource.Success -> {
                     mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
                         isLoading = false,
-                        data = pdfResource.data
+                        data = pdfResource.data.sortedByDescending { it.isFavourite }
                     )
                 }
             }
@@ -100,7 +100,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
                 is Resource.Success -> {
                     mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(
                         isLoading = false,
-                        data = pdfResource.data
+                        data = pdfResource.data.sortedByDescending { it.isFavourite }
                     )
                 }
             }
