@@ -5,6 +5,7 @@ buildscript {
         hiltVersion = '2.43.2'
         timberVersion = '5.0.1'
         fragmentVersion = "1.5.3"
+        roomVersion = "2.4.3"
     }
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"

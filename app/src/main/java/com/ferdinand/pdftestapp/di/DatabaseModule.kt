@@ -1,9 +1,8 @@
 package com.ferdinand.pdftestapp.di
 
 import android.content.Context
+import androidx.room.Room
 import com.ferdinand.pdftestapp.data.PdfDatabase
-import com.ferdinand.pdftestapp.repo.PdfRepo
-import com.ferdinand.pdftestapp.repo.PdfRepoImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,10 +12,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RepositoryModule {
+class DatabaseModule {
 
     @Singleton
     @Provides
-    fun providePdfRepository(@ApplicationContext context: Context, database: PdfDatabase): PdfRepo =
-        PdfRepoImpl(context, database)
+    fun provideDataBase(@ApplicationContext context: Context): PdfDatabase {
+        return Room.databaseBuilder(
+            context.applicationContext,
+            PdfDatabase::class.java,
+            "pdffavorites.db"
+        )
+            .build()
+    }
 }
