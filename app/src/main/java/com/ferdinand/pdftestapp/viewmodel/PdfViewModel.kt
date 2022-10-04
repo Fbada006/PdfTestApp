@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ferdinand.pdftestapp.mappers.toDbModel
-import com.ferdinand.pdftestapp.models.PdfDestination
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.models.PdfFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
@@ -61,7 +60,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
                 dismissError()
             }
             is PdfEvent.OnFavouriteEvent -> {
-                addOrRemoveFileFromFavorites(event.pdfFile, event.destination)
+                addOrRemoveFileFromFavorites(event.pdfFile)
             }
             is PdfEvent.SearchEvent -> {
                 searchFiles()
@@ -69,20 +68,9 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
-    private fun addOrRemoveFileFromFavorites(pdfFile: PdfFile, destination: PdfDestination?) {
+    private fun addOrRemoveFileFromFavorites(pdfFile: PdfFile) {
         viewModelScope.launch {
             pdfRepo.addOrRemoveFileFromFav(pdfFile.toDbModel())
-            // Only refresh the necessary list that has been refreshed depending on the current screen
-            destination?.let {
-                when (destination) {
-                    PdfDestination.MainScreen -> {
-                        getAllPdfFiles()
-                    }
-                    PdfDestination.SearchScreen -> {
-                        searchFiles()
-                    }
-                }
-            }
         }
     }
 

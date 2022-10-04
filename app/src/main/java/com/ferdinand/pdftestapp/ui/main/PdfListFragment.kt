@@ -36,7 +36,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.ferdinand.pdftestapp.R
-import com.ferdinand.pdftestapp.models.PdfDestination
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.ui.composables.RequestPermission
 import com.ferdinand.pdftestapp.ui.theme.PdfTestAppTheme
@@ -126,7 +125,6 @@ class PdfListFragment : Fragment() {
                                     handleEvent = { event ->
                                         viewModel.handleEvent(event)
                                     },
-                                    destination = PdfDestination.MainScreen,
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .fillMaxSize()

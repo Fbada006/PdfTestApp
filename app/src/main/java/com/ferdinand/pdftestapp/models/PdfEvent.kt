@@ -4,10 +4,6 @@ sealed class PdfEvent {
     object GetAllFiles : PdfEvent()
     object ErrorDismissed : PdfEvent()
     object SearchEvent : PdfEvent()
-    data class OnFavouriteEvent(val pdfFile: PdfFile, val destination: PdfDestination?) : PdfEvent()
+    data class OnFavouriteEvent(val pdfFile: PdfFile) : PdfEvent()
 }
 
-sealed class PdfDestination {
-    object SearchScreen : PdfDestination()
-    object MainScreen : PdfDestination()
-}

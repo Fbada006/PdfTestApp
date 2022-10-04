@@ -28,6 +28,7 @@ import androidx.navigation.navArgs
 import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.ui.composables.LikeToggleButton
+import com.ferdinand.pdftestapp.ui.theme.PdfTestAppTheme
 import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
 import com.pspdfkit.configuration.activity.PdfActivityConfiguration
 import com.pspdfkit.configuration.page.PageScrollDirection
@@ -49,66 +50,67 @@ class PdfViewActivity : AppCompatActivity() {
 
         setContent {
             val pdfFile = args.pdfFile
-
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = pdfFile.pdfName,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                finish()
-                            }) {
-                                Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.cd_back_button))
+            PdfTestAppTheme {
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = pdfFile.pdfName,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    finish()
+                                }) {
+                                    Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.cd_back_button))
+                                }
+                            },
+                            actions = {
+                                LikeToggleButton(initialCheckedValue = args.pdfFile.isFavourite, onFavorite = {
+                                    viewModel.handleEvent(PdfEvent.OnFavouriteEvent(pdfFile))
+                                })
                             }
-                        },
-                        actions = {
-                            LikeToggleButton(initialCheckedValue = args.pdfFile.isFavourite, onFavorite = {
-                                viewModel.handleEvent(PdfEvent.OnFavouriteEvent(pdfFile, null))
-                            })
+                        )
+                    },
+                    floatingActionButton = {
+                        FloatingActionButton(onClick = { /*do something*/ }) {
+                            Icon(Icons.Rounded.Output, stringResource(id = R.string.cd_back_button))
                         }
-                    )
-                },
-                floatingActionButton = {
-                    FloatingActionButton(onClick = { /*do something*/ }) {
-                        Icon(Icons.Rounded.Output, stringResource(id = R.string.cd_back_button))
                     }
-                }
-            ) {
-
-                val documentUri = remember { args.pdfFile.uri }
-
-                val pdfActivityConfiguration = PdfActivityConfiguration
-                    .Builder(this)
-                    .scrollDirection(PageScrollDirection.VERTICAL)
-                    .build()
-
-                val documentState = rememberDocumentState(documentUri, pdfActivityConfiguration)
-                val currentPage by remember(documentState.currentPage) { mutableStateOf(documentState.currentPage) }
-
-                Box(
-                    modifier = Modifier
-                        .padding(it)
-                        .fillMaxSize()
                 ) {
-                    DocumentView(
-                        documentState = documentState,
+
+                    val documentUri = remember { args.pdfFile.uri }
+
+                    val pdfActivityConfiguration = PdfActivityConfiguration
+                        .Builder(this)
+                        .scrollDirection(PageScrollDirection.VERTICAL)
+                        .build()
+
+                    val documentState = rememberDocumentState(documentUri, pdfActivityConfiguration)
+                    val currentPage by remember(documentState.currentPage) { mutableStateOf(documentState.currentPage) }
+
+                    Box(
                         modifier = Modifier
+                            .padding(it)
                             .fillMaxSize()
-                            .padding(4.dp)
-                    )
-                }
+                    ) {
+                        DocumentView(
+                            documentState = documentState,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp)
+                        )
+                    }
 
-                LaunchedEffect(currentPage) {
-                    documentState.scrollToPage(currentPage)
-                }
+                    LaunchedEffect(currentPage) {
+                        documentState.scrollToPage(currentPage)
+                    }
 
-                Timber.d("Current page is $currentPage")
+                    Timber.d("Current page is $currentPage")
+                }
             }
         }
     }

@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.ferdinand.pdftestapp.models.PdfDestination
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.models.PdfFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
@@ -26,7 +25,6 @@ import com.ferdinand.pdftestapp.utils.errorToString
 fun PdfList(
     pdfQueryState: PdfQueryState,
     onPdfClick: (pdf: PdfFile) -> Unit,
-    destination: PdfDestination,
     handleEvent: (event: PdfEvent) -> Unit,
     modifier: Modifier
 ) {
@@ -52,7 +50,7 @@ fun PdfList(
                             PdfItem(
                                 pdfFile = pdf,
                                 onFavouriteClick = { file ->
-                                    handleEvent(PdfEvent.OnFavouriteEvent(file, destination))
+                                    handleEvent(PdfEvent.OnFavouriteEvent(file))
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()

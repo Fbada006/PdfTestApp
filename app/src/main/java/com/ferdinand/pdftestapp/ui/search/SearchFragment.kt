@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import com.ferdinand.pdftestapp.models.PdfDestination
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.ui.main.PdfList
 import com.ferdinand.pdftestapp.ui.main.SearchAppBar
@@ -65,7 +64,6 @@ class SearchFragment : Fragment() {
                                 handleEvent = { event ->
                                     viewModel.handleEvent(event)
                                 },
-                                destination = PdfDestination.SearchScreen,
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxSize()
