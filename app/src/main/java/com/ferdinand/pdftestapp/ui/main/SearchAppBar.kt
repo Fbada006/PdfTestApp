@@ -70,7 +70,7 @@ fun SearchAppBar(
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            handleEvent(PdfEvent.SearchEvent(query))
+                            handleEvent(PdfEvent.SearchEvent)
                             keyboardController?.hide()
                         },
                     ),

@@ -1,7 +1,13 @@
 package com.ferdinand.pdftestapp.models
 
 sealed class PdfEvent {
+    object GetAllFiles : PdfEvent()
     object ErrorDismissed : PdfEvent()
-    data class SearchEvent(val searchTerm: String) : PdfEvent()
-    data class OnFavouriteEvent(val pdfFile: PdfFile) : PdfEvent()
+    object SearchEvent : PdfEvent()
+    data class OnFavouriteEvent(val pdfFile: PdfFile, val destination: PdfDestination?) : PdfEvent()
+}
+
+sealed class PdfDestination {
+    object SearchScreen : PdfDestination()
+    object MainScreen : PdfDestination()
 }

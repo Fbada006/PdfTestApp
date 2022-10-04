@@ -3,6 +3,8 @@ package com.ferdinand.pdftestapp.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ferdinand.pdftestapp.mappers.toDbModel
+import com.ferdinand.pdftestapp.models.PdfDestination
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.models.PdfFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
@@ -24,14 +26,13 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
     val filteredPdfState = mutableFilteredPdfState.asStateFlow()
 
     val query = mutableStateOf("")
-
     val arePermissionsGranted = mutableStateOf(false)
 
     init {
         getAllPdfFiles()
     }
 
-    fun getAllPdfFiles() {
+    private fun getAllPdfFiles() {
         mutablePdfQueryState.value = mutablePdfQueryState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
             when (val pdfResource = pdfRepo.getPdfList()) {
@@ -53,28 +54,43 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     fun handleEvent(event: PdfEvent) {
         when (event) {
+            PdfEvent.GetAllFiles -> {
+                getAllPdfFiles()
+            }
             PdfEvent.ErrorDismissed -> {
                 dismissError()
             }
             is PdfEvent.OnFavouriteEvent -> {
-                favouritePdf(event.pdfFile)
+                addOrRemoveFileFromFavorites(event.pdfFile, event.destination)
             }
             is PdfEvent.SearchEvent -> {
-                searchFiles(event.searchTerm)
+                searchFiles()
             }
         }
     }
 
-    private fun favouritePdf(pdfFile: PdfFile) {
-        TODO("Not yet implemented")
+    private fun addOrRemoveFileFromFavorites(pdfFile: PdfFile, destination: PdfDestination?) {
+        viewModelScope.launch {
+            pdfRepo.addOrRemoveFileFromFav(pdfFile.toDbModel())
+            // Only refresh the necessary list that has been refreshed depending on the current screen
+            destination?.let {
+                when (destination) {
+                    PdfDestination.MainScreen -> {
+                        getAllPdfFiles()
+                    }
+                    PdfDestination.SearchScreen -> {
+                        searchFiles()
+                    }
+                }
+            }
+        }
     }
 
-    private fun searchFiles(searchTerm: String) {
+    private fun searchFiles() {
         mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(isLoading = true, error = null, data = null)
         viewModelScope.launch {
-            val pdfFiles = pdfQueryState.value.data
 
-            when (val pdfResource = pdfRepo.getPdfListBasedOnQuery(pdfFiles, searchTerm)) {
+            when (val pdfResource = pdfRepo.getPdfListBasedOnQuery(query.value)) {
                 is Resource.Error -> {
                     mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(
                         isLoading = false,
@@ -91,12 +107,12 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
-    fun onQueryChanged(query: String) {
-        this.query.value = query
+    fun onQueryChanged(newQuery: String) {
+        this.query.value = newQuery
     }
 
-    fun onPermissionsStateChanged(value: Boolean) {
-        this.arePermissionsGranted.value = value
+    fun onPermissionsStateChanged(newValue: Boolean) {
+        this.arePermissionsGranted.value = newValue
     }
 
     private fun dismissError() {

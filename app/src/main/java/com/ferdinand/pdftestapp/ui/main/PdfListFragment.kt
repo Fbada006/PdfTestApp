@@ -36,17 +36,22 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.ferdinand.pdftestapp.R
+import com.ferdinand.pdftestapp.models.PdfDestination
+import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.ui.composables.RequestPermission
 import com.ferdinand.pdftestapp.ui.theme.PdfTestAppTheme
 import com.ferdinand.pdftestapp.utils.toast
 import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
+import com.pspdfkit.jetpack.compose.ExperimentalPSPDFKitApi
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 @ExperimentalComposeUiApi
+@ExperimentalPSPDFKitApi
 class PdfListFragment : Fragment() {
 
     private val viewModel: PdfViewModel by viewModels()
+    private var didUserNavigateToDetails = false
 
     private val storagePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -54,7 +59,7 @@ class PdfListFragment : Fragment() {
             val isAnyPermissionDenied = permissions.entries.any { !it.value }
 
             if (!isAnyPermissionDenied) {
-                viewModel.getAllPdfFiles()
+                viewModel.handleEvent(PdfEvent.GetAllFiles)
                 viewModel.onPermissionsStateChanged(true)
             } else {
                 toast(getString(R.string.toast_storage_permissions))
@@ -64,7 +69,7 @@ class PdfListFragment : Fragment() {
     private val manageStoragePermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
-                viewModel.getAllPdfFiles()
+                viewModel.handleEvent(PdfEvent.GetAllFiles)
                 viewModel.onPermissionsStateChanged(true)
             } else {
                 toast(getString(R.string.toast_storage_permissions))
@@ -113,13 +118,15 @@ class PdfListFragment : Fragment() {
                                 PdfList(
                                     pdfQueryState = pdfQueryState,
                                     onPdfClick = { pdfFile ->
+                                        didUserNavigateToDetails = true
                                         findNavController().navigate(
-                                            PdfListFragmentDirections.actionPdfListFragmentToPdfFragment(pdfFile)
+                                            PdfListFragmentDirections.actionPdfListFragmentToPdfViewActivity(pdfFile)
                                         )
                                     },
                                     handleEvent = { event ->
                                         viewModel.handleEvent(event)
                                     },
+                                    destination = PdfDestination.MainScreen,
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .fillMaxSize()
@@ -164,6 +171,14 @@ class PdfListFragment : Fragment() {
             }
         } else {
             storagePermissions.launch(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE))
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (didUserNavigateToDetails) {
+            viewModel.handleEvent(PdfEvent.GetAllFiles)
+            didUserNavigateToDetails = false
         }
     }
 }

@@ -6,7 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PdfFile(
+    val id: Long,
     val pdfName: String,
     val uri: Uri,
-    val isFavourite: Boolean = false
-): Parcelable
+    val isFavourite: Boolean
+) : Parcelable

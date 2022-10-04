@@ -1,4 +1,4 @@
-package com.ferdinand.pdftestapp.ui
+package com.ferdinand.pdftestapp.ui.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import com.ferdinand.pdftestapp.models.PdfDestination
+import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.ui.main.PdfList
 import com.ferdinand.pdftestapp.ui.main.SearchAppBar
 import com.ferdinand.pdftestapp.ui.theme.PdfTestAppTheme
@@ -28,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SearchFragment : Fragment() {
 
     private val viewModel: PdfViewModel by viewModels()
+    private var didUserNavigateToDetails = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
@@ -54,13 +57,15 @@ class SearchFragment : Fragment() {
                             PdfList(
                                 pdfQueryState = pdfQueryState,
                                 onPdfClick = { pdfFile ->
+                                    didUserNavigateToDetails = true
                                     findNavController().navigate(
-                                        SearchFragmentDirections.actionSearchFragmentToPdfFragment(pdfFile)
+                                        SearchFragmentDirections.actionSearchFragmentToPdfViewActivity(pdfFile)
                                     )
                                 },
                                 handleEvent = { event ->
                                     viewModel.handleEvent(event)
                                 },
+                                destination = PdfDestination.SearchScreen,
                                 modifier = Modifier
                                     .padding(4.dp)
                                     .fillMaxSize()
@@ -70,6 +75,14 @@ class SearchFragment : Fragment() {
                 }
             }
 
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (didUserNavigateToDetails) {
+            viewModel.handleEvent(PdfEvent.SearchEvent)
+            didUserNavigateToDetails = false
         }
     }
 }
