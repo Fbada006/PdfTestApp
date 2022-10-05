@@ -1,4 +1,4 @@
-package com.ferdinand.pdftestapp.ui.main
+package com.ferdinand.pdftestapp.ui.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

@@ -18,8 +18,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.ferdinand.pdftestapp.models.PdfEvent
-import com.ferdinand.pdftestapp.ui.main.PdfList
-import com.ferdinand.pdftestapp.ui.main.SearchAppBar
+import com.ferdinand.pdftestapp.ui.composables.PdfList
+import com.ferdinand.pdftestapp.ui.composables.SearchAppBar
 import com.ferdinand.pdftestapp.ui.theme.PdfTestAppTheme
 import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
 import dagger.hilt.android.AndroidEntryPoint

@@ -1,4 +1,4 @@
-package com.ferdinand.pdftestapp.ui.main
+package com.ferdinand.pdftestapp.ui.composables
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ferdinand.pdftestapp.models.PdfFile
-import com.ferdinand.pdftestapp.ui.composables.LikeToggleButton
 
 @Composable
 fun PdfItem(

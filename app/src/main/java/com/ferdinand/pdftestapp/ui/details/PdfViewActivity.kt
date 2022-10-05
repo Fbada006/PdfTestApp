@@ -31,7 +31,7 @@ import androidx.navigation.navArgs
 import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.ui.composables.LikeToggleButton
-import com.ferdinand.pdftestapp.ui.main.ErrorDialog
+import com.ferdinand.pdftestapp.ui.composables.ErrorDialog
 import com.ferdinand.pdftestapp.ui.theme.PdfTestAppTheme
 import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
 import com.pspdfkit.configuration.activity.PdfActivityConfiguration
