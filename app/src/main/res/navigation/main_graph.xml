@@ -8,19 +8,30 @@
         android:id="@+id/pdfListFragment"
         android:name="com.ferdinand.pdftestapp.ui.main.PdfListFragment">
         <action
-            android:id="@+id/action_pdfListFragment_to_pdfFragment"
-            app:destination="@id/pdfFragment"
+            android:id="@+id/action_pdfListFragment_to_pdfViewActivity"
+            app:destination="@id/pdfViewActivity"
             app:enterAnim="@anim/from_left"
             app:exitAnim="@anim/to_right"
             app:popEnterAnim="@anim/from_right"
-            app:popExitAnim="@anim/to_left"/>
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_pdfListFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/pdfFragment"
-        android:name="com.ferdinand.pdftestapp.ui.details.PdfViewFragment">
-        <argument
-            android:name="pdfFile"
-            app:argType="com.ferdinand.pdftestapp.models.PdfFile" />
+        android:id="@+id/searchFragment"
+        android:name="com.ferdinand.pdftestapp.ui.search.SearchFragment">
+        <action
+            android:id="@+id/action_searchFragment_to_pdfViewActivity"
+            app:destination="@id/pdfViewActivity" />
     </fragment>
+
+    <activity
+        android:id="@+id/pdfViewActivity"
+        android:name="com.ferdinand.pdftestapp.ui.details.PdfViewActivity">
+        <argument
+            android:name="fileId"
+            app:argType="long" />
+    </activity>
 </navigation>

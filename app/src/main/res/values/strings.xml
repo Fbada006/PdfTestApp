@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">PdfTestApp</string>
-    <string name="label_all_pdf_files">All Pdf files</string>
+    <string name="label_all_pdf_files">All Pdf Files</string>
     <string name="default_time_message">Time not found</string>
     <string name="search">Search</string>
     <string name="favourite">Favourite</string>
@@ -14,4 +14,6 @@
     <string name="button_close">Close</string>
     <string name="toast_storage_permissions">Storage permissions are needed for the app to function. Please enable them.</string>
     <string name="cd_back_button">Back button</string>
+    <string name="toggle_size">Like button toggle size</string>
+    <string name="toggle_label">Like button toggle label</string>
 </resources>

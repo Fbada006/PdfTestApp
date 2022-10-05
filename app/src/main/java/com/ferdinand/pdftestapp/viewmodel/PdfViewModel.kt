@@ -3,10 +3,12 @@ package com.ferdinand.pdftestapp.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ferdinand.pdftestapp.mappers.toDbModel
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.models.PdfFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
 import com.ferdinand.pdftestapp.repo.PdfRepo
+import com.ferdinand.pdftestapp.utils.FileNotFoundException
 import com.ferdinand.pdftestapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,15 +22,20 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
     private val mutablePdfQueryState = MutableStateFlow(PdfQueryState())
     val pdfQueryState = mutablePdfQueryState.asStateFlow()
 
-    val query = mutableStateOf("")
+    private val mutableFilteredPdfState = MutableStateFlow(PdfQueryState())
+    val filteredPdfState = mutableFilteredPdfState.asStateFlow()
 
+    private val mutableSinglePdfState = MutableStateFlow(PdfQueryState())
+    val singlePdfState = mutableSinglePdfState.asStateFlow()
+
+    val query = mutableStateOf("")
     val arePermissionsGranted = mutableStateOf(false)
 
     init {
         getAllPdfFiles()
     }
 
-    fun getAllPdfFiles() {
+    private fun getAllPdfFiles() {
         mutablePdfQueryState.value = mutablePdfQueryState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
             when (val pdfResource = pdfRepo.getPdfList()) {
@@ -41,7 +48,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
                 is Resource.Success -> {
                     mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
                         isLoading = false,
-                        data = pdfResource.data
+                        listData = pdfResource.data.sortedByDescending { it.isFavourite }
                     )
                 }
             }
@@ -50,36 +57,98 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     fun handleEvent(event: PdfEvent) {
         when (event) {
-            PdfEvent.ErrorDismissed -> {
+            PdfEvent.GetAllFilesEvent -> {
+                getAllPdfFiles()
+            }
+            PdfEvent.ErrorDismissedEvent -> {
                 dismissError()
             }
             is PdfEvent.OnFavouriteEvent -> {
-                favouritePdf(event.pdfFile)
+                addOrRemoveFileFromFavorites(event.pdfFile)
             }
-            PdfEvent.SearchEvent -> {
+            is PdfEvent.SearchEvent -> {
                 searchFiles()
+            }
+            is PdfEvent.DisplayFileDetailsEvent -> {
+                displayFileDetailsBasedOnId(event.fileId)
             }
         }
     }
 
-    private fun favouritePdf(pdfFile: PdfFile) {
-        TODO("Not yet implemented")
+    private fun displayFileDetailsBasedOnId(fileId: Long) {
+        mutableSinglePdfState.value = mutableSinglePdfState.value.copy(isLoading = true, error = null)
+        viewModelScope.launch {
+            when (val pdfResource = pdfRepo.getPdfFileBasedOnId(fileId)) {
+                is Resource.Error -> {
+                    mutableSinglePdfState.value = mutableSinglePdfState.value.copy(
+                        isLoading = false,
+                        error = pdfResource.error
+                    )
+                }
+                is Resource.Success -> {
+                    if (pdfResource.data != null) {
+                        mutableSinglePdfState.value = mutableSinglePdfState.value.copy(
+                            isLoading = false,
+                            singlePdfData = pdfResource.data
+                        )
+                    } else {
+                        mutableSinglePdfState.value = mutableSinglePdfState.value.copy(
+                            isLoading = false,
+                            error = FileNotFoundException()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addOrRemoveFileFromFavorites(pdfFile: PdfFile?) {
+        viewModelScope.launch {
+            pdfFile?.let {
+                pdfRepo.addOrRemoveFileFromFav(it.toDbModel())
+            }
+        }
     }
 
     private fun searchFiles() {
-        TODO("Not yet implemented")
+        mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(isLoading = true, error = null, listData = null)
+        viewModelScope.launch {
+
+            when (val pdfResource = pdfRepo.getPdfListBasedOnQuery(query.value)) {
+                is Resource.Error -> {
+                    mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(
+                        isLoading = false,
+                        error = pdfResource.error
+                    )
+                }
+                is Resource.Success -> {
+                    mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(
+                        isLoading = false,
+                        listData = pdfResource.data.sortedByDescending { it.isFavourite }
+                    )
+                }
+            }
+        }
     }
 
-    fun onQueryChanged(query: String) {
-        this.query.value = query
+    fun onQueryChanged(newQuery: String) {
+        this.query.value = newQuery
     }
 
-    fun onPermissionsStateChanged(value: Boolean) {
-        this.arePermissionsGranted.value = value
+    fun onPermissionsStateChanged(newValue: Boolean) {
+        this.arePermissionsGranted.value = newValue
     }
 
     private fun dismissError() {
         mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
+            error = null
+        )
+
+        mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(
+            error = null
+        )
+
+        mutableSinglePdfState.value = mutableSinglePdfState.value.copy(
             error = null
         )
     }
