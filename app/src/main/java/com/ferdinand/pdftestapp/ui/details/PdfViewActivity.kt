@@ -51,7 +51,6 @@ import com.pspdfkit.jetpack.compose.DocumentView
 import com.pspdfkit.jetpack.compose.ExperimentalPSPDFKitApi
 import com.pspdfkit.jetpack.compose.rememberDocumentState
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @ExperimentalPSPDFKitApi
 @AndroidEntryPoint
@@ -66,7 +65,7 @@ class PdfViewActivity : AppCompatActivity() {
             val isAnyPermissionDenied = permissions.entries.any { !it.value }
 
             if (!isAnyPermissionDenied) {
-                Timber.e("Write permissions have been granted")
+                saveCurrentPageToFile()
             } else {
                 toast(getString(R.string.toast_write_permissions))
             }
@@ -75,7 +74,7 @@ class PdfViewActivity : AppCompatActivity() {
     private val manageStoragePermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
-                Timber.e("Write permissions have been granted")
+                saveCurrentPageToFile()
             } else {
                 toast(getString(R.string.toast_write_permissions))
             }
