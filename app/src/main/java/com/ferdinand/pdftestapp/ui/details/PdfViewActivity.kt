@@ -1,7 +1,15 @@
 package com.ferdinand.pdftestapp.ui.details
 
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
@@ -27,15 +35,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.navArgs
 import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfEvent
-import com.ferdinand.pdftestapp.ui.composables.LikeToggleButton
 import com.ferdinand.pdftestapp.ui.composables.ErrorDialog
+import com.ferdinand.pdftestapp.ui.composables.LikeToggleButton
 import com.ferdinand.pdftestapp.ui.theme.PdfTestAppTheme
+import com.ferdinand.pdftestapp.utils.toast
 import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
 import com.pspdfkit.configuration.activity.PdfActivityConfiguration
 import com.pspdfkit.configuration.page.PageScrollDirection
+import com.pspdfkit.document.processor.PdfProcessor
 import com.pspdfkit.jetpack.compose.DocumentView
 import com.pspdfkit.jetpack.compose.ExperimentalPSPDFKitApi
 import com.pspdfkit.jetpack.compose.rememberDocumentState
@@ -49,13 +60,37 @@ class PdfViewActivity : AppCompatActivity() {
     private val args by navArgs<PdfViewActivityArgs>()
     private val viewModel by viewModels<PdfViewModel>()
 
+    private val writePermissions =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+
+            val isAnyPermissionDenied = permissions.entries.any { !it.value }
+
+            if (!isAnyPermissionDenied) {
+                Timber.e("Write permissions have been granted")
+            } else {
+                toast(getString(R.string.toast_write_permissions))
+            }
+        }
+
+    private val manageStoragePermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                Timber.e("Write permissions have been granted")
+            } else {
+                toast(getString(R.string.toast_write_permissions))
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.onWritePermissionsStateChanged(checkWritePermission())
         viewModel.handleEvent(PdfEvent.DisplayFileDetailsEvent(args.fileId))
 
         setContent {
             val pdfQueryState by viewModel.singlePdfState.collectAsState()
             val pdfFile = pdfQueryState.singlePdfData
+            val areWritePermissionsGranted = viewModel.areWritePermissionsGranted.value
 
             PdfTestAppTheme {
                 Scaffold(
@@ -83,8 +118,17 @@ class PdfViewActivity : AppCompatActivity() {
                         )
                     },
                     floatingActionButton = {
-                        FloatingActionButton(onClick = { /*do something*/ }) {
-                            Icon(Icons.Rounded.Output, stringResource(id = R.string.cd_back_button))
+                        pdfFile?.let {
+                            // no point showing the fab if the file is non existent
+                            FloatingActionButton(onClick = {
+                                if (areWritePermissionsGranted) {
+                                    saveCurrentPageToFile()
+                                } else {
+                                    requestWritePermissions()
+                                }
+                            }) {
+                                Icon(Icons.Rounded.Output, stringResource(id = R.string.cd_export_page_button))
+                            }
                         }
                     }
                 ) {
@@ -111,6 +155,7 @@ class PdfViewActivity : AppCompatActivity() {
 
                                 val documentState = rememberDocumentState(documentUri, pdfActivityConfiguration)
                                 val currentPage by remember(documentState.currentPage) { mutableStateOf(documentState.currentPage) }
+                                viewModel.onCurrentPageChanged(currentPage)
 
                                 DocumentView(
                                     documentState = documentState,
@@ -121,8 +166,6 @@ class PdfViewActivity : AppCompatActivity() {
                                 LaunchedEffect(currentPage) {
                                     documentState.scrollToPage(currentPage)
                                 }
-
-                                Timber.d("Current page is $currentPage")
                             }
 
                             pdfQueryState.error?.let {
@@ -139,5 +182,44 @@ class PdfViewActivity : AppCompatActivity() {
             }
         }
     }
-}
 
+    @SuppressLint("CheckResult")
+    private fun saveCurrentPageToFile() {
+        viewModel.handleEvent(PdfEvent.ExportCurrentPageEvent)
+        viewModel.exportPageFlowable
+            .subscribe(
+                /* onNext = */ { progress: PdfProcessor.ProcessorProgress ->
+                    toast("Processing page ${progress.pagesProcessed}/${progress.totalPages}")
+                },
+                /* onError = */ { error -> toast("Processing has failed: ${error.message}") },
+                /* onComplete = */ { toast("Your image has been exported successfully.") }
+            )
+    }
+
+    private fun requestWritePermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                intent.addCategory("android.intent.category.DEFAULT")
+                intent.data = Uri.parse(String.format("package:%s", applicationContext?.packageName))
+                manageStoragePermission.launch(intent)
+            } catch (e: Exception) {
+                val intent = Intent()
+                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+                manageStoragePermission.launch(intent)
+            }
+        } else {
+            writePermissions.launch(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        }
+    }
+
+    private fun checkWritePermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Environment.isExternalStorageManager()
+        } else {
+            val readExternalStoragePerm =
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            readExternalStoragePerm == PackageManager.PERMISSION_GRANTED
+        }
+    }
+}

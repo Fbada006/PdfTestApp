@@ -60,7 +60,7 @@ class PdfListFragment : Fragment() {
 
             if (!isAnyPermissionDenied) {
                 viewModel.handleEvent(PdfEvent.GetAllFilesEvent)
-                viewModel.onPermissionsStateChanged(true)
+                viewModel.onReadPermissionsStateChanged(true)
             } else {
                 toast(getString(R.string.toast_storage_permissions))
             }
@@ -70,7 +70,7 @@ class PdfListFragment : Fragment() {
         if (SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
                 viewModel.handleEvent(PdfEvent.GetAllFilesEvent)
-                viewModel.onPermissionsStateChanged(true)
+                viewModel.onReadPermissionsStateChanged(true)
             } else {
                 toast(getString(R.string.toast_storage_permissions))
             }
@@ -79,14 +79,14 @@ class PdfListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.onPermissionsStateChanged(checkStoragePermission())
+        viewModel.onReadPermissionsStateChanged(checkStoragePermission())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
                 val pdfQueryState by viewModel.pdfQueryState.collectAsState()
-                val arePermissionsGranted = viewModel.arePermissionsGranted.value
+                val arePermissionsGranted = viewModel.areReadPermissionsGranted.value
 
                 PdfTestAppTheme {
                     Scaffold(

@@ -3,6 +3,7 @@ package com.ferdinand.pdftestapp.repo
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.core.database.getStringOrNull
@@ -12,6 +13,12 @@ import com.ferdinand.pdftestapp.data.models.DbFavoritePdfFile
 import com.ferdinand.pdftestapp.models.PdfFile
 import com.ferdinand.pdftestapp.utils.EmptyListException
 import com.ferdinand.pdftestapp.utils.Resource
+import com.pspdfkit.document.PdfDocumentLoader
+import com.pspdfkit.document.processor.PdfProcessor
+import com.pspdfkit.document.processor.PdfProcessorTask
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -119,8 +126,6 @@ class PdfRepoImpl @Inject constructor(
                                     } else {
                                         PdfFile(id = id, pdfName = pdfName, uri = pdfUri, isFavourite = false)
                                     }
-
-                                    Resource.Success(pdf!!)
                                 }
                             }
                         }
@@ -130,27 +135,6 @@ class PdfRepoImpl @Inject constructor(
                 Resource.Error(exception)
             }
         }
-    }
-
-    private suspend fun addPdfFileToList(
-        cursor: Cursor,
-        columnName: Int,
-        columnId: Int,
-        pathData: String,
-        pdfList: MutableList<PdfFile>
-    ) {
-        val displayName = cursor.getStringOrNull(columnName)
-        val fileId = cursor.getLong(columnId)
-        val pdfUri = File(pathData).toUri()
-        val pdfName = getPdfDisplayName(displayName, pathData)
-
-        val pdfFile = if (isFileFavourite(fileId)) {
-            PdfFile(id = fileId, pdfName = pdfName, uri = pdfUri, isFavourite = true)
-        } else {
-            PdfFile(id = fileId, pdfName = pdfName, uri = pdfUri, isFavourite = false)
-        }
-
-        pdfList += pdfFile
     }
 
     /*
@@ -184,6 +168,39 @@ class PdfRepoImpl @Inject constructor(
             // Otherwise add it to the db
             database.pdfDao().addToFav(pdfFile)
         }
+    }
+
+    override fun exportCurrentPageToPdf(pdfFile: PdfFile, currentPage: Int): Flowable<PdfProcessor.ProcessorProgress> {
+        val fileName = "${pdfFile.pdfName.replace(".pdf", "")} page ${currentPage.plus(1)}.$EXTENSION_PDF"
+        val document = PdfDocumentLoader.openDocument(context, pdfFile.uri)
+        val processorTask = PdfProcessorTask.fromDocument(document).keepPages(setOf(currentPage))
+
+        val outputFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName)
+
+        return PdfProcessor.processDocumentAsync(processorTask, outputFile)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    private suspend fun addPdfFileToList(
+        cursor: Cursor,
+        columnName: Int,
+        columnId: Int,
+        pathData: String,
+        pdfList: MutableList<PdfFile>
+    ) {
+        val displayName = cursor.getStringOrNull(columnName)
+        val fileId = cursor.getLong(columnId)
+        val pdfUri = File(pathData).toUri()
+        val pdfName = getPdfDisplayName(displayName, pathData)
+
+        val pdfFile = if (isFileFavourite(fileId)) {
+            PdfFile(id = fileId, pdfName = pdfName, uri = pdfUri, isFavourite = true)
+        } else {
+            PdfFile(id = fileId, pdfName = pdfName, uri = pdfUri, isFavourite = false)
+        }
+
+        pdfList += pdfFile
     }
 
     private suspend fun isFileFavourite(id: Long): Boolean {
