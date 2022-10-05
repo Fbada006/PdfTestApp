@@ -46,7 +46,6 @@ import com.ferdinand.pdftestapp.utils.toast
 import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
 import com.pspdfkit.configuration.activity.PdfActivityConfiguration
 import com.pspdfkit.configuration.page.PageScrollDirection
-import com.pspdfkit.document.processor.PdfProcessor
 import com.pspdfkit.jetpack.compose.DocumentView
 import com.pspdfkit.jetpack.compose.ExperimentalPSPDFKitApi
 import com.pspdfkit.jetpack.compose.rememberDocumentState
@@ -187,11 +186,15 @@ class PdfViewActivity : AppCompatActivity() {
         viewModel.handleEvent(PdfEvent.ExportCurrentPageEvent)
         viewModel.exportPageFlowable
             .subscribe(
-                /* onNext = */ { progress: PdfProcessor.ProcessorProgress ->
-                    toast("Processing page ${progress.pagesProcessed}/${progress.totalPages}")
+                {
+                    toast(getString(R.string.file_export_ongoing))
                 },
-                /* onError = */ { error -> toast("Processing has failed: ${error.message}") },
-                /* onComplete = */ { toast("Your image has been exported successfully.") }
+                { error ->
+                    toast(getString(R.string.file_exported_fail, error.message))
+                },
+                {
+                    toast(getString(R.string.file_exported_success))
+                }
             )
     }
 
