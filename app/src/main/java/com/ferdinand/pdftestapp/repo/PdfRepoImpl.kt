@@ -63,7 +63,7 @@ class PdfRepoImpl @Inject constructor(
         }
     }
 
-    private suspend fun getPdfListFromFile(): MutableList<PdfFile> {
+    private suspend fun getPdfListFromFile(): List<PdfFile> {
         val pdfList = mutableListOf<PdfFile>()
 
         context.contentResolver.query(collection, projection, selection, selectionArgs, sortOrder).use { cursor ->
@@ -85,6 +85,51 @@ class PdfRepoImpl @Inject constructor(
             }
         }
         return pdfList
+    }
+
+    override suspend fun getPdfFileBasedOnId(id: Long): Resource<PdfFile?> {
+        return withContext(dispatcher) {
+            try {
+                var pdf: PdfFile? = null
+                val selection = MediaStore.Files.FileColumns._ID + " = ?"
+                val selectionArgs = arrayOf(id.toString())
+
+                context.contentResolver.query(
+                    collection,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null
+                )
+                    .use { cursor ->
+                        cursor?.let {
+                            if (cursor.moveToFirst()) {
+                                val columnData = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
+                                val columnName = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME)
+
+                                val pathData = cursor.getString(columnData)
+                                val isDownloadData = isDownloadData(pathData)
+                                if (isDownloadData) {
+                                    val displayName = cursor.getStringOrNull(columnName)
+                                    val pdfUri = File(pathData).toUri()
+                                    val pdfName = getPdfDisplayName(displayName, pathData)
+
+                                    pdf = if (isFileFavourite(id)) {
+                                        PdfFile(id = id, pdfName = pdfName, uri = pdfUri, isFavourite = true)
+                                    } else {
+                                        PdfFile(id = id, pdfName = pdfName, uri = pdfUri, isFavourite = false)
+                                    }
+
+                                    Resource.Success(pdf!!)
+                                }
+                            }
+                        }
+                    }
+                Resource.Success(pdf)
+            } catch (exception: Exception) {
+                Resource.Error(exception)
+            }
+        }
     }
 
     private suspend fun addPdfFileToList(

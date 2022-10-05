@@ -28,7 +28,7 @@ fun PdfList(
     handleEvent: (event: PdfEvent) -> Unit,
     modifier: Modifier
 ) {
-    val pdfList = pdfQueryState.data
+    val pdfList = pdfQueryState.listData
     val state = rememberLazyListState()
     val context = LocalContext.current
 
@@ -70,7 +70,7 @@ fun PdfList(
                     ErrorDialog(
                         error = it.errorToString(context),
                         dismissError = {
-                            handleEvent(PdfEvent.ErrorDismissed)
+                            handleEvent(PdfEvent.ErrorDismissedEvent)
                         }
                     )
                 }

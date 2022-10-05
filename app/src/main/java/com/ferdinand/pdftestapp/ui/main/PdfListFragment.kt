@@ -58,7 +58,7 @@ class PdfListFragment : Fragment() {
             val isAnyPermissionDenied = permissions.entries.any { !it.value }
 
             if (!isAnyPermissionDenied) {
-                viewModel.handleEvent(PdfEvent.GetAllFiles)
+                viewModel.handleEvent(PdfEvent.GetAllFilesEvent)
                 viewModel.onPermissionsStateChanged(true)
             } else {
                 toast(getString(R.string.toast_storage_permissions))
@@ -68,7 +68,7 @@ class PdfListFragment : Fragment() {
     private val manageStoragePermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
-                viewModel.handleEvent(PdfEvent.GetAllFiles)
+                viewModel.handleEvent(PdfEvent.GetAllFilesEvent)
                 viewModel.onPermissionsStateChanged(true)
             } else {
                 toast(getString(R.string.toast_storage_permissions))
@@ -119,7 +119,7 @@ class PdfListFragment : Fragment() {
                                     onPdfClick = { pdfFile ->
                                         didUserNavigateToDetails = true
                                         findNavController().navigate(
-                                            PdfListFragmentDirections.actionPdfListFragmentToPdfViewActivity(pdfFile)
+                                            PdfListFragmentDirections.actionPdfListFragmentToPdfViewActivity(pdfFile.id)
                                         )
                                     },
                                     handleEvent = { event ->
@@ -175,7 +175,7 @@ class PdfListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (didUserNavigateToDetails) {
-            viewModel.handleEvent(PdfEvent.GetAllFiles)
+            viewModel.handleEvent(PdfEvent.GetAllFilesEvent)
             didUserNavigateToDetails = false
         }
     }

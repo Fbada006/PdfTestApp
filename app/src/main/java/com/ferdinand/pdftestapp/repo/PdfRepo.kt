@@ -9,4 +9,5 @@ interface PdfRepo {
     suspend fun getPdfList(): Resource<List<PdfFile>>
     suspend fun getPdfListBasedOnQuery(searchTerm: String): Resource<List<PdfFile>>
     suspend fun addOrRemoveFileFromFav(pdfFile: DbFavoritePdfFile)
+    suspend fun getPdfFileBasedOnId(id: Long): Resource<PdfFile?>
 }

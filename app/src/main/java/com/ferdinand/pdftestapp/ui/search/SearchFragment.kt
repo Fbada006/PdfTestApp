@@ -58,7 +58,7 @@ class SearchFragment : Fragment() {
                                 onPdfClick = { pdfFile ->
                                     didUserNavigateToDetails = true
                                     findNavController().navigate(
-                                        SearchFragmentDirections.actionSearchFragmentToPdfViewActivity(pdfFile)
+                                        SearchFragmentDirections.actionSearchFragmentToPdfViewActivity(pdfFile.id)
                                     )
                                 },
                                 handleEvent = { event ->
@@ -72,7 +72,6 @@ class SearchFragment : Fragment() {
                     }
                 }
             }
-
         }
     }
 

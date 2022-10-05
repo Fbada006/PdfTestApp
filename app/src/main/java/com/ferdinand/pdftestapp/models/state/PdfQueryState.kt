@@ -10,5 +10,6 @@ import com.ferdinand.pdftestapp.models.PdfFile
 data class PdfQueryState(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
-    val data: List<PdfFile>? = null
+    val listData: List<PdfFile>? = null,
+    val singlePdfData: PdfFile? = null
 )
