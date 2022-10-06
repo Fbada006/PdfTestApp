@@ -109,15 +109,18 @@ class PdfViewActivity : AppCompatActivity() {
                                 }
                             },
                             actions = {
-                                LikeToggleButton(initialCheckedValue = pdfFile?.isFavourite ?: false, onFavorite = {
-                                    viewModel.handleEvent(PdfEvent.OnFavouriteEvent(pdfFile))
-                                })
+                                pdfFile?.let {file ->
+                                    // Only display the fav state once there is a valid file
+                                    LikeToggleButton(initialCheckedValue = file.isFavourite, onFavorite = {
+                                        viewModel.handleEvent(PdfEvent.OnFavouriteEvent(file))
+                                    })
+                                }
                             }
                         )
                     },
                     floatingActionButton = {
                         pdfFile?.let {
-                            // no point showing the fab if the file is non existent
+                            // No point showing the fab if the file is non existent
                             FloatingActionButton(onClick = {
                                 if (areWritePermissionsGranted) {
                                     saveCurrentPageToFile()
