@@ -15,6 +15,11 @@ buildscript {
         jUnitVersion = "4.13.2"
         jUnitExtVersion = "1.1.3"
         espressoCoreVersion = "3.4.0"
+        truthVersion = "1.1.3"
+        coroutinesVersion = "1.6.4"
+        roboelectricVersion = "4.8.1"
+        coreTestingVersion = "2.1.0"
+        androidxTestRunnerVersion = "1.4.0"
     }
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
@@ -25,4 +30,11 @@ plugins {
     id 'com.android.application' version '7.3.0' apply false
     id 'com.android.library' version '7.3.0' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
