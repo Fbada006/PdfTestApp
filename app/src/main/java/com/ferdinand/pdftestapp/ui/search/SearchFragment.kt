@@ -13,10 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.dimensionResource
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.ui.composables.PdfList
 import com.ferdinand.pdftestapp.ui.composables.SearchAppBar
@@ -65,7 +66,7 @@ class SearchFragment : Fragment() {
                                     viewModel.handleEvent(event)
                                 },
                                 modifier = Modifier
-                                    .padding(4.dp)
+                                    .padding(dimensionResource(id = R.dimen.size_4))
                                     .fillMaxSize()
                             )
                         }

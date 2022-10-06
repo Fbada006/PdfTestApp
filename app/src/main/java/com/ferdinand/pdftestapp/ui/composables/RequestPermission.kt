@@ -9,8 +9,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.ferdinand.pdftestapp.R
 
 @Composable
@@ -27,7 +27,7 @@ fun RequestPermission(
 
         Text(text = stringResource(id = R.string.storage_permission_needed))
 
-        Spacer(modifier = Modifier.padding(4.dp))
+        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.size_4)))
 
         Button(onClick = onRequestPermissionsClicked) {
             Text(text = stringResource(id = R.string.button_request_permission))

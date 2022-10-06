@@ -15,7 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.dimensionResource
+import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.models.PdfFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
@@ -42,7 +43,7 @@ fun PdfList(
                 )
             } else {
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.size_8)),
                     state = state
                 ) {
                     pdfList?.let {
@@ -61,7 +62,7 @@ fun PdfList(
                         }
 
                         item {
-                            Spacer(modifier = Modifier.padding(2.dp))
+                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.size_2)))
                         }
                     }
                 }

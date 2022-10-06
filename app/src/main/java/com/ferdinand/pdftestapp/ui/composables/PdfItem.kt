@@ -8,8 +8,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfFile
 
 @Composable
@@ -20,9 +21,12 @@ fun PdfItem(
 ) {
     Card(
         modifier = modifier,
-        elevation = 8.dp
+        elevation = dimensionResource(id = R.dimen.size_8)
     ) {
-        Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.size_8)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = pdfFile.pdfName,
                 style = MaterialTheme.typography.h6,
