@@ -12,5 +12,5 @@ interface PdfRepo {
     suspend fun getPdfListBasedOnQuery(searchTerm: String): Resource<List<PdfFile>>
     suspend fun addOrRemoveFileFromFav(pdfFile: DbFavoritePdfFile)
     suspend fun getPdfFileBasedOnId(id: Long): Resource<PdfFile?>
-     fun exportCurrentPageToPdf(pdfFile: PdfFile, currentPage: Int): Flowable<PdfProcessor.ProcessorProgress>
+    fun exportCurrentPageToPdf(pdfFile: PdfFile, currentPage: Int): Flowable<PdfProcessor.ProcessorProgress>
 }
