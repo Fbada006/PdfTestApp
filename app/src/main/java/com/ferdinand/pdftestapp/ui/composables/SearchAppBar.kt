@@ -22,11 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfEvent
 
@@ -42,7 +42,7 @@ fun SearchAppBar(
     Surface(
         modifier = Modifier
             .fillMaxWidth(),
-        elevation = 8.dp,
+        elevation = dimensionResource(id = R.dimen.size_8),
         color = MaterialTheme.colors.primarySurface
     ) {
         Column {
@@ -52,7 +52,7 @@ fun SearchAppBar(
                     onClick = onBackClicked,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(end = 8.dp)
+                        .padding(end = dimensionResource(id = R.dimen.size_8))
                 ) {
                     Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.cd_back_button))
                 }
@@ -60,7 +60,7 @@ fun SearchAppBar(
                 TextField(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(4.dp),
+                        .padding(dimensionResource(id = R.dimen.size_4)),
                     value = query,
                     onValueChange = { onQueryChanged(it) },
                     label = { Text(text = stringResource(id = R.string.search)) },

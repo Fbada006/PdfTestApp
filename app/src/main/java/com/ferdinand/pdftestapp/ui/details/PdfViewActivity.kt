@@ -32,9 +32,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.navArgs
 import com.ferdinand.pdftestapp.R
@@ -161,7 +161,7 @@ class PdfViewActivity : AppCompatActivity() {
                                 DocumentView(
                                     documentState = documentState,
                                     modifier = Modifier
-                                        .padding(4.dp)
+                                        .padding(dimensionResource(id = R.dimen.size_4))
                                 )
 
                                 LaunchedEffect(currentPage) {

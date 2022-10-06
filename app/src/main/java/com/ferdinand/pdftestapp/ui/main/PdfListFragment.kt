@@ -28,9 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -127,15 +127,15 @@ class PdfListFragment : Fragment() {
                                         viewModel.handleEvent(event)
                                     },
                                     modifier = Modifier
-                                        .padding(4.dp)
+                                        .padding(dimensionResource(id = R.dimen.size_4))
                                         .fillMaxSize()
                                 )
                             } else {
                                 RequestPermission(
-                                    onRequestPermissionsClicked = { requestPermission() },
+                                    onRequestPermissionsClicked = { requestStoragePermission() },
                                     onCloseClicked = { activity?.finish() },
                                     modifier = Modifier
-                                        .padding(4.dp)
+                                        .padding(dimensionResource(id = R.dimen.size_4))
                                         .align(Alignment.Center)
                                 )
                             }
@@ -156,7 +156,7 @@ class PdfListFragment : Fragment() {
         }
     }
 
-    private fun requestPermission() {
+    private fun requestStoragePermission() {
         if (SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
