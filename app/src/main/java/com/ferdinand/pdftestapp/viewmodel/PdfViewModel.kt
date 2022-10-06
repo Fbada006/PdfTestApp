@@ -10,7 +10,9 @@ import com.ferdinand.pdftestapp.models.state.PdfQueryState
 import com.ferdinand.pdftestapp.repo.PdfRepo
 import com.ferdinand.pdftestapp.utils.FileNotFoundException
 import com.ferdinand.pdftestapp.utils.Resource
+import com.pspdfkit.document.processor.PdfProcessor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.Flowable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -28,8 +30,11 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
     private val mutableSinglePdfState = MutableStateFlow(PdfQueryState())
     val singlePdfState = mutableSinglePdfState.asStateFlow()
 
+    private val currentPage = mutableStateOf(0)
     val query = mutableStateOf("")
-    val arePermissionsGranted = mutableStateOf(false)
+    val areReadPermissionsGranted = mutableStateOf(false)
+    val areWritePermissionsGranted = mutableStateOf(false)
+    lateinit var exportPageFlowable: Flowable<PdfProcessor.ProcessorProgress>
 
     init {
         getAllPdfFiles()
@@ -63,15 +68,25 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
             PdfEvent.ErrorDismissedEvent -> {
                 dismissError()
             }
+            PdfEvent.SearchEvent -> {
+                searchFiles()
+            }
+            PdfEvent.ExportCurrentPageEvent -> {
+                exportCurrentPageToPdf()
+            }
             is PdfEvent.OnFavouriteEvent -> {
                 addOrRemoveFileFromFavorites(event.pdfFile)
-            }
-            is PdfEvent.SearchEvent -> {
-                searchFiles()
             }
             is PdfEvent.DisplayFileDetailsEvent -> {
                 displayFileDetailsBasedOnId(event.fileId)
             }
+        }
+    }
+
+    private fun exportCurrentPageToPdf() {
+        val pdfFile = singlePdfState.value.singlePdfData
+        pdfFile?.let {
+            exportPageFlowable = pdfRepo.exportCurrentPageToPdf(it, currentPage.value)
         }
     }
 
@@ -135,8 +150,16 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         this.query.value = newQuery
     }
 
-    fun onPermissionsStateChanged(newValue: Boolean) {
-        this.arePermissionsGranted.value = newValue
+    fun onReadPermissionsStateChanged(newValue: Boolean) {
+        this.areReadPermissionsGranted.value = newValue
+    }
+
+    fun onWritePermissionsStateChanged(newValue: Boolean) {
+        this.areWritePermissionsGranted.value = newValue
+    }
+
+    fun onCurrentPageChanged(currentPage: Int) {
+        this.currentPage.value = currentPage
     }
 
     private fun dismissError() {

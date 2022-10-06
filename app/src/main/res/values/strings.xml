@@ -8,12 +8,17 @@
     <string name="error_title">Whoops</string>
     <string name="error_action">OK</string>
     <string name="empty_list">There is no data to display at the moment. Confirm that you have PDF files in your download folder and try again. Thank you.</string>
-    <string name="something_went_wrong">Something went wrong in getting your PDF files. Please try again. Thank you.</string>
+    <string name="something_went_wrong">Something went wrong in accessing your PDF files. Please try again. Thank you.</string>
     <string name="storage_permission_needed">The app needs storage access to function correctly. Without this, the app will not be able to get the PDF files on your device. If you wish to proceed, please click the Grant Permissions button. Otherwise close the app by clicking the Close button.</string>
     <string name="button_request_permission">Grant Permissions</string>
     <string name="button_close">Close</string>
     <string name="toast_storage_permissions">Storage permissions are needed for the app to function. Please enable them.</string>
+    <string name="toast_write_permissions">Write permissions are needed for the app to function. Please enable them.</string>
     <string name="cd_back_button">Back button</string>
+    <string name="cd_export_page_button">Save current page as PDF file button</string>
     <string name="toggle_size">Like button toggle size</string>
     <string name="toggle_label">Like button toggle label</string>
+    <string name="file_exported_success">Your document has been exported successfully.</string>
+    <string name="file_export_ongoing">Processing your document now. Please wait.</string>
+    <string name="file_exported_fail">Exporting your document has failed with the following error: %s.</string>
 </resources>
