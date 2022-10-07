@@ -1,4 +1,4 @@
-name: Build Android Project
+name: Build Android Project and Run Unit Tests
 
 on:
   push:
@@ -25,5 +25,5 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-    - name: Unit Test
+    - name: Run Unit Tests
       run: ./gradlew testDebugUnitTest
