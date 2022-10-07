@@ -40,6 +40,6 @@
         android:name="com.ferdinand.pdftestapp.ui.details.PdfViewActivity">
         <argument
             android:name="fileId"
-            app:argType="long" />
+            app:argType="string" />
     </activity>
 </navigation>
