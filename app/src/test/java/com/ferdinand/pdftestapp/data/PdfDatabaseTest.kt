@@ -42,7 +42,7 @@ class PdfDatabaseTest {
 
     @Test
     fun `checking non fav file for fav returns null file`() = runTest {
-        assertThat(pdfDao.getFileById(23)).isNull()
+        assertThat(pdfDao.getFileById("")).isNull()
     }
 
     @Test
