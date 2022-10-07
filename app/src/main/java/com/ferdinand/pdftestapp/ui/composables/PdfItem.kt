@@ -15,12 +15,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.ferdinand.pdftestapp.R
-import com.ferdinand.pdftestapp.data.PdfFile
+import com.ferdinand.pdftestapp.models.PdfPresentationFile
 
 @Composable
 fun PdfItem(
-    pdfFile: PdfFile,
-    onFavouriteClick: (pdf: PdfFile) -> Unit,
+    pdfFile: PdfPresentationFile,
+    onFavouriteClick: (pdf: PdfPresentationFile) -> Unit,
     modifier: Modifier
 ) {
     Card(

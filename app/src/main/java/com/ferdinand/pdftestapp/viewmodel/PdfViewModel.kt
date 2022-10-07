@@ -3,9 +3,11 @@ package com.ferdinand.pdftestapp.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ferdinand.pdftestapp.mappers.toDataModel
 import com.ferdinand.pdftestapp.mappers.toDbModel
+import com.ferdinand.pdftestapp.mappers.toPresentationModel
 import com.ferdinand.pdftestapp.models.PdfEvent
-import com.ferdinand.pdftestapp.data.PdfFile
+import com.ferdinand.pdftestapp.models.PdfPresentationFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
 import com.ferdinand.pdftestapp.repo.PdfRepo
 import com.ferdinand.pdftestapp.utils.FileNotFoundException
@@ -53,7 +55,9 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
                 is Resource.Success -> {
                     mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
                         isLoading = false,
-                        listData = pdfResource.data.sortedByDescending { it.isFavourite }
+                        listData = pdfResource.data.map {
+                            it.toPresentationModel()
+                        }.sortedByDescending { it.isFavourite }
                     )
                 }
             }
@@ -84,7 +88,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
     }
 
     private fun exportCurrentPageToPdf() {
-        val pdfFile = singlePdfState.value.singlePdfData
+        val pdfFile = singlePdfState.value.singlePdfData?.toDataModel()
         pdfFile?.let {
             exportPageFlowable = pdfRepo.exportCurrentPageToPdf(it, currentPage.value)
         }
@@ -104,7 +108,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
                     if (pdfResource.data != null) {
                         mutableSinglePdfState.value = mutableSinglePdfState.value.copy(
                             isLoading = false,
-                            singlePdfData = pdfResource.data
+                            singlePdfData = pdfResource.data.toPresentationModel()
                         )
                     } else {
                         mutableSinglePdfState.value = mutableSinglePdfState.value.copy(
@@ -117,10 +121,10 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
-    private fun addOrRemoveFileFromFavorites(pdfFile: PdfFile?) {
+    private fun addOrRemoveFileFromFavorites(pdfFile: PdfPresentationFile?) {
         viewModelScope.launch {
             pdfFile?.let {
-                pdfRepo.addOrRemoveFileFromFav(it.toDbModel())
+                pdfRepo.addOrRemoveFileFromFav(it.toDataModel().toDbModel())
             }
         }
     }
@@ -139,7 +143,10 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
                 is Resource.Success -> {
                     mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(
                         isLoading = false,
-                        listData = pdfResource.data.sortedByDescending { it.isFavourite }
+                        listData = pdfResource.data
+                            .map {
+                                it.toPresentationModel()
+                            }.sortedByDescending { it.isFavourite }
                     )
                 }
             }
