@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ferdinand.pdftestapp.mappers.toDbModel
 import com.ferdinand.pdftestapp.models.PdfEvent
-import com.ferdinand.pdftestapp.models.PdfFile
+import com.ferdinand.pdftestapp.data.PdfFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
 import com.ferdinand.pdftestapp.repo.PdfRepo
 import com.ferdinand.pdftestapp.utils.FileNotFoundException

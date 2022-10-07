@@ -1,4 +1,4 @@
-package com.ferdinand.pdftestapp.models
+package com.ferdinand.pdftestapp.data
 
 import android.net.Uri
 

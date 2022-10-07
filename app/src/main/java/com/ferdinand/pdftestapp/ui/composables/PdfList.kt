@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfEvent
-import com.ferdinand.pdftestapp.models.PdfFile
+import com.ferdinand.pdftestapp.data.PdfFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
 import com.ferdinand.pdftestapp.utils.errorToString
 

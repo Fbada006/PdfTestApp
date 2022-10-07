@@ -1,5 +1,7 @@
 package com.ferdinand.pdftestapp.models
 
+import com.ferdinand.pdftestapp.data.PdfFile
+
 sealed class PdfEvent {
     object GetAllFilesEvent : PdfEvent()
     object ErrorDismissedEvent : PdfEvent()

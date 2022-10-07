@@ -1,6 +1,6 @@
 package com.ferdinand.pdftestapp.models.state
 
-import com.ferdinand.pdftestapp.models.PdfFile
+import com.ferdinand.pdftestapp.data.PdfFile
 
 /*
 * This class will handle the pdf querying state to determine what is going to be shown on screen

@@ -15,7 +15,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.ferdinand.pdftestapp.R
-import com.ferdinand.pdftestapp.models.PdfFile
+import com.ferdinand.pdftestapp.data.PdfFile
 
 @Composable
 fun PdfItem(
