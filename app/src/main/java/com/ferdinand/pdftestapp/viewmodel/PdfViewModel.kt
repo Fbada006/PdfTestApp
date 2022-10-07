@@ -42,28 +42,6 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         getAllPdfFiles()
     }
 
-    private fun getAllPdfFiles() {
-        mutablePdfQueryState.value = mutablePdfQueryState.value.copy(isLoading = true, error = null)
-        viewModelScope.launch {
-            when (val pdfResource = pdfRepo.getPdfList()) {
-                is Resource.Error -> {
-                    mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
-                        isLoading = false,
-                        error = pdfResource.error
-                    )
-                }
-                is Resource.Success -> {
-                    mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
-                        isLoading = false,
-                        listData = pdfResource.data.map {
-                            it.toPresentationModel()
-                        }.sortedByDescending { it.isFavourite }
-                    )
-                }
-            }
-        }
-    }
-
     fun handleEvent(event: PdfEvent) {
         when (event) {
             PdfEvent.GetAllFilesEvent -> {
@@ -83,6 +61,28 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
             }
             is PdfEvent.DisplayFileDetailsEvent -> {
                 displayFileDetailsBasedOnId(event.fileId)
+            }
+        }
+    }
+
+    private fun getAllPdfFiles() {
+        mutablePdfQueryState.value = mutablePdfQueryState.value.copy(isLoading = true, error = null)
+        viewModelScope.launch {
+            when (val pdfResource = pdfRepo.getPdfList()) {
+                is Resource.Error -> {
+                    mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
+                        isLoading = false,
+                        error = pdfResource.error
+                    )
+                }
+                is Resource.Success -> {
+                    mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
+                        isLoading = false,
+                        listData = pdfResource.data.map {
+                            it.toPresentationModel()
+                        }.sortedByDescending { it.isFavourite }
+                    )
+                }
             }
         }
     }
