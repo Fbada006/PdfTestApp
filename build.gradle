@@ -20,6 +20,8 @@ buildscript {
         roboelectricVersion = "4.8.1"
         coreTestingVersion = "2.1.0"
         androidxTestRunnerVersion = "1.4.0"
+        mockkVersion = "1.12.5"
+        turbineVersion = "0.10.0"
     }
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"

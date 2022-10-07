@@ -95,6 +95,8 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$rootProject.roboelectricVersion"
     testImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
     testImplementation "androidx.test:runner:$rootProject.androidxTestRunnerVersion"
+    testImplementation "io.mockk:mockk:$rootProject.mockkVersion"
+    testImplementation "app.cash.turbine:turbine:$rootProject.turbineVersion"
 
     // UI tests
     androidTestImplementation "androidx.test.ext:junit:$rootProject.jUnitExtVersion"
