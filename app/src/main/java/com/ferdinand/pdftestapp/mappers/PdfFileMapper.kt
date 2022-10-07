@@ -1,6 +1,6 @@
 package com.ferdinand.pdftestapp.mappers
 
-import com.ferdinand.pdftestapp.data.PdfFile
+import com.ferdinand.pdftestapp.data.models.PdfFile
 import com.ferdinand.pdftestapp.data.models.DbFavoritePdfFile
 import com.ferdinand.pdftestapp.models.PdfPresentationFile
 

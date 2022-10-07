@@ -10,7 +10,7 @@ import androidx.core.database.getStringOrNull
 import androidx.core.net.toUri
 import com.ferdinand.pdftestapp.data.PdfDatabase
 import com.ferdinand.pdftestapp.data.models.DbFavoritePdfFile
-import com.ferdinand.pdftestapp.data.PdfFile
+import com.ferdinand.pdftestapp.data.models.PdfFile
 import com.ferdinand.pdftestapp.utils.EmptyListException
 import com.ferdinand.pdftestapp.utils.Resource
 import com.pspdfkit.document.PdfDocumentLoader

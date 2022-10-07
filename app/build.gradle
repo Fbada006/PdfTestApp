@@ -47,6 +47,10 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    testOptions {
+        unitTests.includeAndroidResources  = true
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -82,8 +86,19 @@ dependencies {
     implementation("androidx.room:room-ktx:$rootProject.roomVersion")
     kapt("androidx.room:room-compiler:$rootProject.roomVersion")
 
+    // Unit tests
     testImplementation "junit:junit:$rootProject.jUnitVersion"
     testImplementation("androidx.room:room-testing:$roomVersion")
+    testImplementation "androidx.test.ext:junit-ktx:$rootProject.jUnitExtVersion"
+    testImplementation "com.google.truth:truth:$rootProject.truthVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    testImplementation "org.robolectric:robolectric:$rootProject.roboelectricVersion"
+    testImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
+    testImplementation "androidx.test:runner:$rootProject.androidxTestRunnerVersion"
+    testImplementation "io.mockk:mockk:$rootProject.mockkVersion"
+    testImplementation "app.cash.turbine:turbine:$rootProject.turbineVersion"
+
+    // UI tests
     androidTestImplementation "androidx.test.ext:junit:$rootProject.jUnitExtVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoCoreVersion"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$composeUIVersion"
