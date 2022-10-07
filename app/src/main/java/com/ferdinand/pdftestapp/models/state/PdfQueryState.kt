@@ -1,6 +1,6 @@
 package com.ferdinand.pdftestapp.models.state
 
-import com.ferdinand.pdftestapp.models.PdfFile
+import com.ferdinand.pdftestapp.models.PdfPresentationFile
 
 /*
 * This class will handle the pdf querying state to determine what is going to be shown on screen
@@ -10,6 +10,6 @@ import com.ferdinand.pdftestapp.models.PdfFile
 data class PdfQueryState(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
-    val listData: List<PdfFile>? = null,
-    val singlePdfData: PdfFile? = null
+    val listData: List<PdfPresentationFile>? = null,
+    val singlePdfData: PdfPresentationFile? = null
 )
