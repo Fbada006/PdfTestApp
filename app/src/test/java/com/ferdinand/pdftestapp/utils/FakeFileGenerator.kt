@@ -1,8 +1,8 @@
 package com.ferdinand.pdftestapp.utils
 
 import android.net.Uri
+import com.ferdinand.pdftestapp.data.PdfFile
 import com.ferdinand.pdftestapp.data.models.DbFavoritePdfFile
-import com.ferdinand.pdftestapp.models.PdfFile
 
 val dbFavFiles = listOf(
     DbFavoritePdfFile(2),

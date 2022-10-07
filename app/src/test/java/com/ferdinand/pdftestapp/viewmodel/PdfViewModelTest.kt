@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.ferdinand.pdftestapp.data.PdfDao
 import com.ferdinand.pdftestapp.data.PdfDatabase
+import com.ferdinand.pdftestapp.mappers.toPresentationModel
 import com.ferdinand.pdftestapp.models.PdfEvent
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
 import com.ferdinand.pdftestapp.repo.PdfRepo
@@ -55,7 +56,9 @@ class PdfViewModelTest {
 
         // Assert flow has correct data
         pdfViewModel.pdfQueryState.test {
-            assertThat(awaitItem()).isEqualTo(PdfQueryState(isLoading = false, listData = pdfFiles))
+            assertThat(awaitItem()).isEqualTo(PdfQueryState(isLoading = false, listData = pdfFiles.map {
+                it.toPresentationModel()
+            }))
         }
     }
 
