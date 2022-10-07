@@ -26,6 +26,8 @@ class PdfRepoImpl @Inject constructor(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PdfRepo {
 
+    private val downloadDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
     /*
     * Since we are not sure how long this query will take, it makes sense to wrap it around a coroutine and take
     * this functionality off the main thread to the IO one instead
@@ -33,7 +35,7 @@ class PdfRepoImpl @Inject constructor(
     override suspend fun getPdfList(): Resource<List<PdfFile>> {
         return withContext(dispatcher) {
             try {
-                val pdfList = getPdfListFromFile()
+                val pdfList = getPdfListFromFile(downloadDirectory)
 
                 if (pdfList.isNotEmpty()) {
                     Resource.Success(pdfList)
@@ -46,15 +48,14 @@ class PdfRepoImpl @Inject constructor(
         }
     }
 
-    private suspend fun getPdfListFromFile(): List<PdfFile> {
+    private suspend fun getPdfListFromFile(dir: File): List<PdfFile> {
         val pdfList = mutableListOf<PdfFile>()
-        val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val fileList = dir.listFiles()
 
         fileList?.let {
             fileList.forEach { file ->
                 if (file.isDirectory) {
-                    getPdfListFromFile()
+                    pdfList.addAll(getPdfListFromFile(file))
                 } else {
                     if (file.name.endsWith(PATH_PDF) && isDownloadData(file.path)) {
                         val canonicalPath = file.canonicalPath
@@ -76,7 +77,7 @@ class PdfRepoImpl @Inject constructor(
     override suspend fun getPdfFileBasedOnId(id: String): Resource<PdfFile?> {
         return withContext(dispatcher) {
             try {
-                val pdfFiles = getPdfListFromFile()
+                val pdfFiles = getPdfListFromFile(downloadDirectory)
                 val file = pdfFiles.singleOrNull { it.id == id }
 
                 Resource.Success(file)
@@ -93,7 +94,7 @@ class PdfRepoImpl @Inject constructor(
     override suspend fun getPdfListBasedOnQuery(searchTerm: String): Resource<List<PdfFile>> {
         return withContext(dispatcher) {
             try {
-                val pdfFiles = getPdfListFromFile()
+                val pdfFiles = getPdfListFromFile(downloadDirectory)
                 val filteredList = pdfFiles.filter { it.pdfName.contains(searchTerm, true) }
 
                 if (filteredList.isEmpty()) {
