@@ -1,7 +1,7 @@
 package com.ferdinand.pdftestapp.repo
 
 import com.ferdinand.pdftestapp.data.models.DbFavoritePdfFile
-import com.ferdinand.pdftestapp.models.PdfFile
+import com.ferdinand.pdftestapp.data.PdfFile
 import com.ferdinand.pdftestapp.utils.Resource
 import com.pspdfkit.document.processor.PdfProcessor
 import io.reactivex.Flowable
