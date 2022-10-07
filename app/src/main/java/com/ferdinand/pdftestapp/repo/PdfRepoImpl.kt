@@ -1,12 +1,7 @@
 package com.ferdinand.pdftestapp.repo
 
 import android.content.Context
-import android.database.Cursor
-import android.os.Build
 import android.os.Environment
-import android.provider.MediaStore
-import android.webkit.MimeTypeMap
-import androidx.core.database.getStringOrNull
 import androidx.core.net.toUri
 import com.ferdinand.pdftestapp.data.PdfDatabase
 import com.ferdinand.pdftestapp.data.models.DbFavoritePdfFile
@@ -31,25 +26,6 @@ class PdfRepoImpl @Inject constructor(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PdfRepo {
 
-    private val projection = arrayOf(
-        MediaStore.Files.FileColumns._ID,
-        MediaStore.Files.FileColumns.DISPLAY_NAME,
-        MediaStore.Files.FileColumns.DATE_ADDED,
-        MediaStore.Files.FileColumns.DATA,
-        MediaStore.Files.FileColumns.MIME_TYPE
-    )
-
-    private val sortOrder = MediaStore.Files.FileColumns.DATE_ADDED + " DESC"
-    private val selection = MediaStore.Files.FileColumns.MIME_TYPE + " = ?"
-    private val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(EXTENSION_PDF)
-    private val selectionArgs = arrayOf(mimeType)
-
-    private val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL)
-    } else {
-        MediaStore.Files.getContentUri(VOLUME_EXTERNAL)
-    }
-
     /*
     * Since we are not sure how long this query will take, it makes sense to wrap it around a coroutine and take
     * this functionality off the main thread to the IO one instead
@@ -72,65 +48,38 @@ class PdfRepoImpl @Inject constructor(
 
     private suspend fun getPdfListFromFile(): List<PdfFile> {
         val pdfList = mutableListOf<PdfFile>()
+        val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val fileList = dir.listFiles()
 
-        context.contentResolver.query(collection, projection, selection, selectionArgs, sortOrder).use { cursor ->
-            cursor?.let {
-                if (it.moveToFirst()) {
-
-                    val columnData = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
-                    val columnName = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME)
-                    val columnId = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)
-
-                    while (it.moveToNext()) {
-                        val pathData = cursor.getString(columnData)
-                        val isDownloadData = isDownloadData(pathData)
-                        if (isDownloadData) {
-                            addPdfFileToList(cursor, columnName, columnId, pathData, pdfList)
-                        }
+        fileList?.let {
+            fileList.forEach { file ->
+                if (file.isDirectory) {
+                    getPdfListFromFile()
+                } else {
+                    if (file.name.endsWith(PATH_PDF) && isDownloadData(file.path)) {
+                        val canonicalPath = file.canonicalPath
+                        val pdf = PdfFile(
+                            id = canonicalPath,
+                            pdfName = file.name,
+                            uri = file.toUri(),
+                            isFavourite = isFileFavourite(canonicalPath)
+                        )
+                        pdfList.add(pdf)
                     }
                 }
             }
         }
+
         return pdfList
     }
 
-    override suspend fun getPdfFileBasedOnId(id: Long): Resource<PdfFile?> {
+    override suspend fun getPdfFileBasedOnId(id: String): Resource<PdfFile?> {
         return withContext(dispatcher) {
             try {
-                var pdf: PdfFile? = null
-                val selection = MediaStore.Files.FileColumns._ID + " = ?"
-                val selectionArgs = arrayOf(id.toString())
+                val pdfFiles = getPdfListFromFile()
+                val file = pdfFiles.singleOrNull { it.id == id }
 
-                context.contentResolver.query(
-                    collection,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    null
-                )
-                    .use { cursor ->
-                        cursor?.let {
-                            if (cursor.moveToFirst()) {
-                                val columnData = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
-                                val columnName = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME)
-
-                                val pathData = cursor.getString(columnData)
-                                val isDownloadData = isDownloadData(pathData)
-                                if (isDownloadData) {
-                                    val displayName = cursor.getStringOrNull(columnName)
-                                    val pdfUri = File(pathData).toUri()
-                                    val pdfName = getPdfDisplayName(displayName, pathData)
-
-                                    pdf = if (isFileFavourite(id)) {
-                                        PdfFile(id = id, pdfName = pdfName, uri = pdfUri, isFavourite = true)
-                                    } else {
-                                        PdfFile(id = id, pdfName = pdfName, uri = pdfUri, isFavourite = false)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                Resource.Success(pdf)
+                Resource.Success(file)
             } catch (exception: Exception) {
                 Resource.Error(exception)
             }
@@ -182,39 +131,10 @@ class PdfRepoImpl @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    private suspend fun addPdfFileToList(
-        cursor: Cursor,
-        columnName: Int,
-        columnId: Int,
-        pathData: String,
-        pdfList: MutableList<PdfFile>
-    ) {
-        val displayName = cursor.getStringOrNull(columnName)
-        val fileId = cursor.getLong(columnId)
-        val pdfUri = File(pathData).toUri()
-        val pdfName = getPdfDisplayName(displayName, pathData)
-
-        val pdfFile = if (isFileFavourite(fileId)) {
-            PdfFile(id = fileId, pdfName = pdfName, uri = pdfUri, isFavourite = true)
-        } else {
-            PdfFile(id = fileId, pdfName = pdfName, uri = pdfUri, isFavourite = false)
-        }
-
-        pdfList += pdfFile
-    }
-
-    private suspend fun isFileFavourite(id: Long): Boolean {
+    private suspend fun isFileFavourite(id: String): Boolean {
         val dbFile = database.pdfDao().getFileById(id)
 
         return dbFile != null
-    }
-
-    /*
-    * Some older versions of android may return a null display name and even perhaps newer versions
-    * as well, which is why this extra check is so important. The path data has the name of the file as well
-    * */
-    private fun getPdfDisplayName(displayName: String?, pathData: String): String {
-        return displayName ?: pathData.substringAfterLast(DELIMITER_FORWARD_SLASH_CHAR)
     }
 
     /*
@@ -239,7 +159,7 @@ class PdfRepoImpl @Inject constructor(
     companion object {
         private const val DELIMITER_FORWARD_SLASH_CHAR = '/'
         private const val SUFFIX_DOWNLOAD = "download"
-        const val VOLUME_EXTERNAL = "external"
         private const val EXTENSION_PDF = "pdf"
+        private const val PATH_PDF = ".pdf"
     }
 }

@@ -10,5 +10,5 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "favouritePdfs")
 data class DbFavoritePdfFile(
     @PrimaryKey
-    val id: Long
+    val id: String
 )

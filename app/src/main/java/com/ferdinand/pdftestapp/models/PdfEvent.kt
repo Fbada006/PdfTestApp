@@ -6,6 +6,6 @@ sealed class PdfEvent {
     object SearchEvent : PdfEvent()
     object ExportCurrentPageEvent : PdfEvent()
     data class OnFavouriteEvent(val pdfFile: PdfPresentationFile?) : PdfEvent()
-    data class DisplayFileDetailsEvent(val fileId: Long) : PdfEvent()
+    data class DisplayFileDetailsEvent(val fileId: String) : PdfEvent()
 }
 

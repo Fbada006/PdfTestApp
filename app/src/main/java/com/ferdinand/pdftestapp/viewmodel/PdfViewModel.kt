@@ -94,7 +94,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
-    private fun displayFileDetailsBasedOnId(fileId: Long) {
+    private fun displayFileDetailsBasedOnId(fileId: String) {
         mutableSinglePdfState.value = mutableSinglePdfState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
             when (val pdfResource = pdfRepo.getPdfFileBasedOnId(fileId)) {

@@ -14,7 +14,7 @@ interface PdfDao {
     suspend fun addToFav(pdfFile: DbFavoritePdfFile)
 
     @Query("SELECT * FROM favouritePdfs WHERE id LIKE :fileId")
-    suspend fun getFileById(fileId: Long): DbFavoritePdfFile?
+    suspend fun getFileById(fileId: String): DbFavoritePdfFile?
 
     @Delete
     suspend fun removeFromFav(pdfFile: DbFavoritePdfFile)
