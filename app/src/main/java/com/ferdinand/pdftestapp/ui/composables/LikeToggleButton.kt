@@ -26,9 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ferdinand.pdftestapp.R
 
+/*
+* These two components in this class are essentially the same with the main difference in how state is handled. The LikeToggleButton
+* propagates state up to the parent while the DetailsLikeToggleButton handles state within itself for use in the pdf view screen
+* */
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
-fun LikeToggleButton(
+fun DetailsLikeToggleButton(
     initialCheckedValue: Boolean,
     onFavorite: () -> Unit,
 ) {
@@ -67,6 +71,54 @@ fun LikeToggleButton(
 
         Icon(
             imageVector = if (checkedState.value) Icons.Filled.Star else Icons.Filled.StarBorder,
+            contentDescription = stringResource(id = R.string.favourite),
+            tint = tint,
+            modifier = Modifier.size(size)
+        )
+    }
+}
+
+@SuppressLint("UnusedTransitionTargetStateParameter")
+@Composable
+fun LikeToggleButton(
+    isFav: Boolean,
+    onFavorite: () -> Unit,
+) {
+
+    val checkedState = remember { mutableStateOf(isFav) }
+
+    IconToggleButton(
+        checked = checkedState.value,
+        onCheckedChange = {
+            onFavorite()
+            checkedState.value = !checkedState.value
+        }
+    ) {
+
+        val transition = updateTransition(checkedState.value, label = stringResource(id = R.string.toggle_label))
+
+        val size by transition.animateDp(
+            transitionSpec = {
+                if (false isTransitioningTo true) {
+                    keyframes {
+                        durationMillis = 250
+                        30.dp at 0 with LinearOutSlowInEasing
+                        35.dp at 15 with FastOutLinearInEasing
+                        40.dp at 75
+                        35.dp at 150
+                    }
+                } else {
+                    spring(stiffness = Spring.StiffnessVeryLow)
+                }
+            },
+            label = stringResource(id = R.string.toggle_size),
+            targetValueByState = { dimensionResource(id = R.dimen.size_25) }
+        )
+
+        val tint = if (isFav) MaterialTheme.colors.secondary else Color.Unspecified
+
+        Icon(
+            imageVector = if (isFav) Icons.Filled.Star else Icons.Filled.StarBorder,
             contentDescription = stringResource(id = R.string.favourite),
             tint = tint,
             modifier = Modifier.size(size)

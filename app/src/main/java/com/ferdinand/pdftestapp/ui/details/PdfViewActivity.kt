@@ -39,8 +39,8 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.navArgs
 import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfEvent
+import com.ferdinand.pdftestapp.ui.composables.DetailsLikeToggleButton
 import com.ferdinand.pdftestapp.ui.composables.ErrorDialog
-import com.ferdinand.pdftestapp.ui.composables.LikeToggleButton
 import com.ferdinand.pdftestapp.ui.theme.PdfTestAppTheme
 import com.ferdinand.pdftestapp.utils.toast
 import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
@@ -109,9 +109,9 @@ class PdfViewActivity : AppCompatActivity() {
                                 }
                             },
                             actions = {
-                                pdfFile?.let {file ->
+                                pdfFile?.let { file ->
                                     // Only display the fav state once there is a valid file
-                                    LikeToggleButton(initialCheckedValue = file.isFavourite, onFavorite = {
+                                    DetailsLikeToggleButton(initialCheckedValue = file.isFavourite, onFavorite = {
                                         viewModel.handleEvent(PdfEvent.OnFavouriteEvent(file))
                                     })
                                 }
