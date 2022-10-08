@@ -48,7 +48,7 @@ fun PdfItem(
                     .weight(1f)
             )
 
-            LikeToggleButton(initialCheckedValue = pdfFile.isFavourite, onFavorite = { onFavouriteClick(pdfFile) })
+            LikeToggleButton(isFav = pdfFile.isFavourite, onFavorite = { onFavouriteClick(pdfFile) })
 
         }
     }

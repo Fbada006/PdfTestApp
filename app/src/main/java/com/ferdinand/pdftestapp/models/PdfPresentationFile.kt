@@ -6,5 +6,5 @@ data class PdfPresentationFile(
     val id: String,
     val pdfName: String,
     val uri: Uri,
-    val isFavourite: Boolean
+    var isFavourite: Boolean
 )
