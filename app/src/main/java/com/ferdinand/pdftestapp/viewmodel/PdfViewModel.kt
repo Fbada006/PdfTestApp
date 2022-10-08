@@ -22,6 +22,12 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+* This class is responsible for storing and managing UI related data in a lifecycle-conscious way. It is the middle man between the data and
+ * the UI layer.
+ *
+ * @see <a href="https://developer.android.com/topic/libraries/architecture/viewmodel">ViewModel overview </a>
+* */
 @HiltViewModel
 class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel() {
 

@@ -177,11 +177,11 @@ class PdfRepoImpl @Inject constructor(
     }
 
     /**
-    * This is a helper to check if the id of the file exists in the db or not.
-    *
+     * This is a helper to check if the id of the file exists in the db or not.
+     *
      * @param id is the id of the file
-    * @return true if file is not null, otherwise false
-    * */
+     * @return true if file is not null, otherwise false
+     * */
     private suspend fun isFileFavourite(id: String): Boolean {
         val dbFile = database.pdfDao().getFileById(id)
 
