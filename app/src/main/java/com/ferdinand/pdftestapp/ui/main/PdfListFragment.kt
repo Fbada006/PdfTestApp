@@ -47,6 +47,9 @@ import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
 import com.pspdfkit.jetpack.compose.ExperimentalPSPDFKitApi
 import dagger.hilt.android.AndroidEntryPoint
 
+/*
+* This is the screen that shows the all the pdf files the user has and provides star/unstar and viewing functionalities
+* */
 @AndroidEntryPoint
 @ExperimentalComposeUiApi
 @ExperimentalPSPDFKitApi

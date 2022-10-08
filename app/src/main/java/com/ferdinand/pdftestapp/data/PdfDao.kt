@@ -7,6 +7,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ferdinand.pdftestapp.data.models.DbFavoritePdfFile
 
+/*
+* The DAO handles querying the db to check for favorites, add, and remove them as needed.
+* */
 @Dao
 interface PdfDao {
 

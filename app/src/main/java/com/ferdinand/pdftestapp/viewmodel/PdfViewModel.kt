@@ -42,9 +42,13 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
     lateinit var exportPageFlowable: Flowable<PdfProcessor.ProcessorProgress>
 
     init {
+        // Immediately the app is launched, we query the file system to show all the files the user has
         getAllPdfFiles()
     }
 
+    /*
+    * Handle the different UI events accordingly. Using a sealed class is beneficial because they are faster than enums
+    * */
     fun handleEvent(event: PdfEvent) {
         when (event) {
             PdfEvent.GetAllFilesEvent -> {
@@ -60,7 +64,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
                 exportCurrentPageToPdf()
             }
             is PdfEvent.OnFavouriteEvent -> {
-                addOrRemoveFileFromFavorites(event.pdfFile)
+                addOrRemoveFileFromFavoritesAndRefreshList(event.pdfFile)
             }
             is PdfEvent.DisplayFileDetailsEvent -> {
                 displayFileDetailsBasedOnId(event.fileId)
@@ -68,6 +72,10 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
+    /*
+    * Query the file system to get all the files. The viewModelScope is used to launch the coroutine because it will be
+    * automatically cleared once this viewmodel is destroyed
+    * */
     private fun getAllPdfFiles() {
         mutablePdfQueryState.value = mutablePdfQueryState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
@@ -90,6 +98,10 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
+    /*
+    * Save the current page as a single page pdf file. The viewModelScope is used to launch the coroutine because it will be
+    * automatically cleared once this viewmodel is destroyed
+    * */
     private fun exportCurrentPageToPdf() {
         val pdfFile = singlePdfState.value.singlePdfData?.toDataModel()
         pdfFile?.let {
@@ -97,6 +109,10 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
+    /*
+    * Get the file based on the id. The viewModelScope is used to launch the coroutine because it will be
+    * automatically cleared once this viewmodel is destroyed
+    * */
     private fun displayFileDetailsBasedOnId(fileId: String) {
         mutableSinglePdfState.value = mutableSinglePdfState.value.copy(isLoading = true, error = null)
         viewModelScope.launch {
@@ -124,7 +140,11 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
-    private fun addOrRemoveFileFromFavorites(pdfFile: PdfPresentationFile?) {
+    /*
+    * Add or remove a file from db and update the list for the UI. The viewModelScope is used to launch the coroutine because it will be
+    * automatically cleared once this viewmodel is destroyed
+    * */
+    private fun addOrRemoveFileFromFavoritesAndRefreshList(pdfFile: PdfPresentationFile?) {
         viewModelScope.launch {
             pdfFile?.let {
                 try {
@@ -175,6 +195,10 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
+    /*
+    * Conduct a search based on the query by the user. The viewModelScope is used to launch the coroutine because it will be
+    * automatically cleared once this viewmodel is destroyed
+    * */
     private fun searchFiles() {
         mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(isLoading = true, error = null, listData = null)
         viewModelScope.launch {
@@ -199,26 +223,44 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
         }
     }
 
+    /*
+    * Update the user's query
+    * */
     fun onQueryChanged(newQuery: String) {
         this.query.value = newQuery
     }
 
+    /*
+    * Keep track of the read permission state
+    * */
     fun onReadPermissionsStateChanged(newValue: Boolean) {
         this.areReadPermissionsGranted.value = newValue
     }
 
+    /*
+    * Keep track of the read permission state
+    * */
     fun onWritePermissionsStateChanged(newValue: Boolean) {
         this.areWritePermissionsGranted.value = newValue
     }
 
+    /*
+    * Keep track of the current page the user is viewing
+    * */
     fun onCurrentPageChanged(currentPage: Int) {
         this.currentPage.value = currentPage
     }
 
+    /*
+    * Keep track of the current screen
+    * */
     fun onDestinationChanged(destination: PdfDestination) {
         this.destination.value = destination
     }
 
+    /*
+    * Set all error properties in all the states as null to dismiss a dialog
+    * */
     private fun dismissError() {
         mutablePdfQueryState.value = mutablePdfQueryState.value.copy(
             error = null

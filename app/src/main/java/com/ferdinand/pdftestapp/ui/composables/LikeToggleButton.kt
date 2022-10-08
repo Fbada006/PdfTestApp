@@ -26,10 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ferdinand.pdftestapp.R
 
-/*
-* These two components in this class are essentially the same with the main difference in how state is handled. The LikeToggleButton
-* propagates state up to the parent while the DetailsLikeToggleButton handles state within itself for use in the pdf view screen
-* */
+/**
+ * These two components in this file are essentially the same with the main difference in how state is handled. The LikeToggleButton
+ * propagates state up to the parent while the DetailsLikeToggleButton handles state within itself for use in the pdf view screen
+ *
+ * @param initialCheckedValue is the value to be used to determine the checked state initially
+ * @param onFavorite is the function to handle the favorite feature
+ * */
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun DetailsLikeToggleButton(
@@ -78,6 +81,12 @@ fun DetailsLikeToggleButton(
     }
 }
 
+/**
+ *This function LikeToggleButton state up to the parent so that the whole row can be updated properly once recomposition happens
+ *
+ * @param isFav is the value to be used to determine the icon to show
+ * @param onFavorite is the function to handle the favorite feature
+ * */
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun LikeToggleButton(
