@@ -24,6 +24,15 @@ import com.ferdinand.pdftestapp.models.PdfPresentationFile
 import com.ferdinand.pdftestapp.models.state.PdfQueryState
 import com.ferdinand.pdftestapp.utils.errorToString
 
+/**
+ * This is the list composable to be used in both the [com.ferdinand.pdftestapp.viewmodel.PdfViewModel] and
+ * [com.ferdinand.pdftestapp.ui.main.PdfListFragment]
+ *
+ * @param pdfQueryState is the state of the UI
+ * @param onPdfClick is a function to handle clicking items on screen
+ * @param handleEvent is a function to pass Ui events to the viewModel
+ * @param modifier is the modifier to be applied to the layout
+ * */
 @ExperimentalFoundationApi
 @Composable
 fun PdfList(

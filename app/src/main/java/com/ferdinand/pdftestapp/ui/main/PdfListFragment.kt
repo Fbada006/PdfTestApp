@@ -47,6 +47,9 @@ import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
 import com.pspdfkit.jetpack.compose.ExperimentalPSPDFKitApi
 import dagger.hilt.android.AndroidEntryPoint
 
+/*
+* This is the screen that shows the all the pdf files the user has and provides star/unstar and viewing functionalities
+* */
 @AndroidEntryPoint
 @ExperimentalComposeUiApi
 @ExperimentalPSPDFKitApi
@@ -105,9 +108,10 @@ class PdfListFragment : Fragment() {
                                 },
                                 actions = {
                                     IconButton(onClick = {
+                                        didUserNavigateToDetails = true
                                         findNavController().navigate(R.id.action_pdfListFragment_to_searchFragment)
                                     }) {
-                                        Icon(Icons.Default.Search, stringResource(id = R.string.search))
+                                        Icon(Icons.Default.Search, contentDescription = stringResource(id = R.string.search))
                                     }
                                 }
                             )

@@ -30,6 +30,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfEvent
 
+/**
+ * This function draws creates a search UI for the user to query for files by name in the [com.ferdinand.pdftestapp.ui.search.SearchFragment]
+ * and provide necessary navigation buttons. It serves the purpose of a search bar
+ *
+ * @param query is the user's search term
+ * @param onBackClicked is the function to trigger logic when the user clicks the back button on the bar
+ * @param onQueryChanged is the function that updates the viewModel of the new search term
+ * @param handleEvent is the function that updates the viewModel of the new UI events
+ * */
 @ExperimentalComposeUiApi
 @Composable
 fun SearchAppBar(

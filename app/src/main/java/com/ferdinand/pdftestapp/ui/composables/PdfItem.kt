@@ -17,6 +17,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.ferdinand.pdftestapp.R
 import com.ferdinand.pdftestapp.models.PdfPresentationFile
 
+/**
+ * This is the item card used to display a list of pdf files in both the [com.ferdinand.pdftestapp.viewmodel.PdfViewModel] and
+ * [com.ferdinand.pdftestapp.ui.main.PdfListFragment].
+ *
+ * @param pdfFile is the current item in the row to be bound to the UI
+ * @param onFavouriteClick is a function to handle the favourite feature
+ * @param modifier is the modifier to be applied to the layout
+ * */
 @Composable
 fun PdfItem(
     pdfFile: PdfPresentationFile,

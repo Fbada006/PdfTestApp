@@ -51,6 +51,10 @@ import com.pspdfkit.jetpack.compose.ExperimentalPSPDFKitApi
 import com.pspdfkit.jetpack.compose.rememberDocumentState
 import dagger.hilt.android.AndroidEntryPoint
 
+/*
+* This is the screen that shows the pdf file using the PSPDFKIT library. The screen is actually an activity because PSPDFKIT expects
+* an activity and not a fragment. Using a fragment will throw exceptions occasionally
+* */
 @ExperimentalPSPDFKitApi
 @AndroidEntryPoint
 class PdfViewActivity : AppCompatActivity() {
@@ -105,7 +109,7 @@ class PdfViewActivity : AppCompatActivity() {
                                 IconButton(onClick = {
                                     finish()
                                 }) {
-                                    Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.cd_back_button))
+                                    Icon(Icons.Rounded.ArrowBack, contentDescription = stringResource(id = R.string.cd_back_button))
                                 }
                             },
                             actions = {
@@ -128,7 +132,7 @@ class PdfViewActivity : AppCompatActivity() {
                                     requestWritePermissions()
                                 }
                             }) {
-                                Icon(Icons.Rounded.Output, stringResource(id = R.string.cd_export_page_button))
+                                Icon(Icons.Rounded.Output, contentDescription = stringResource(id = R.string.cd_export_page_button))
                             }
                         }
                     }

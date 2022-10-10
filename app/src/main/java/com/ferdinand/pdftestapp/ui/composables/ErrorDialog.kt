@@ -13,6 +13,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.ferdinand.pdftestapp.R
 
+/**
+ * This is used to show a dialog box in case of any errors when getting data. It has a title, message, and a button to dismiss
+ *
+ * @param error is the error message to show on screen
+ * @param dismissError is a function to handle dismissing the dialog
+ * @param modifier is the modifier to be applied to the layout
+ * */
 @Composable
 fun ErrorDialog(
     modifier: Modifier = Modifier,

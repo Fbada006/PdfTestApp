@@ -13,6 +13,14 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.ferdinand.pdftestapp.R
 
+/**
+ * This function draws a UI requesting the user to grant permissions and explains why they are needed. The user has the option of
+ * closing the application and closing it completely
+ *
+ * @param onRequestPermissionsClicked is the functions to trigger logic to request permissions
+ * @param onCloseClicked is the function to trigger logic when the user wants to close the app
+ * @param modifier is the modifier to be applied to the layout
+ * */
 @Composable
 fun RequestPermission(
     onRequestPermissionsClicked: () -> Unit,

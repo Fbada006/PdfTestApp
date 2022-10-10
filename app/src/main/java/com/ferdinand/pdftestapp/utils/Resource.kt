@@ -2,7 +2,7 @@ package com.ferdinand.pdftestapp.utils
 
 /*
 * This is a helper class we use to wrap around the result that we get back from
-* querying for all the pdf files from the device
+* doing operations such as querying for files
 *
 */
 sealed class Resource<T> {
