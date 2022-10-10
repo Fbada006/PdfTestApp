@@ -109,7 +109,7 @@ class PdfViewActivity : AppCompatActivity() {
                                 IconButton(onClick = {
                                     finish()
                                 }) {
-                                    Icon(Icons.Rounded.ArrowBack, stringResource(id = R.string.cd_back_button))
+                                    Icon(Icons.Rounded.ArrowBack, contentDescription = stringResource(id = R.string.cd_back_button))
                                 }
                             },
                             actions = {
@@ -132,7 +132,7 @@ class PdfViewActivity : AppCompatActivity() {
                                     requestWritePermissions()
                                 }
                             }) {
-                                Icon(Icons.Rounded.Output, stringResource(id = R.string.cd_export_page_button))
+                                Icon(Icons.Rounded.Output, contentDescription = stringResource(id = R.string.cd_export_page_button))
                             }
                         }
                     }

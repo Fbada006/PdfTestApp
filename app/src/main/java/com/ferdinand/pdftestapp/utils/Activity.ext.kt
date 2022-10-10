@@ -4,7 +4,7 @@ import android.app.Activity
 import android.widget.Toast
 
 /*
-* Helper toast extension function for Activities
+* Helper extension function for Activities
 * */
 fun Activity.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

@@ -108,9 +108,10 @@ class PdfListFragment : Fragment() {
                                 },
                                 actions = {
                                     IconButton(onClick = {
+                                        didUserNavigateToDetails = true
                                         findNavController().navigate(R.id.action_pdfListFragment_to_searchFragment)
                                     }) {
-                                        Icon(Icons.Default.Search, stringResource(id = R.string.search))
+                                        Icon(Icons.Default.Search, contentDescription = stringResource(id = R.string.search))
                                     }
                                 }
                             )

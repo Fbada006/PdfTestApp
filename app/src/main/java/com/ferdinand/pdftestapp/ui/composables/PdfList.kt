@@ -30,7 +30,7 @@ import com.ferdinand.pdftestapp.utils.errorToString
  *
  * @param pdfQueryState is the state of the UI
  * @param onPdfClick is a function to handle clicking items on screen
- * @param handleEvent is a function to pass Ui events to the viewmodel
+ * @param handleEvent is a function to pass Ui events to the viewModel
  * @param modifier is the modifier to be applied to the layout
  * */
 @ExperimentalFoundationApi

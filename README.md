@@ -1,16 +1,30 @@
-[![Build Android Project](https://github.com/Fbada006/PdfTestApp/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/Fbada006/PdfTestApp/actions/workflows/build.yml)
+[![Build PDFTestApp](https://github.com/Fbada006/PdfTestApp/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/Fbada006/PdfTestApp/actions/workflows/build.yml)
 
 # PdfTestApp
 
 This is a simple application that is built using the Model-View-ViewModel (MVVM) architecture in 100% Kotlin. It has the
-following features:
+following features and screens:
 
-1. Displays all the PDF files that the user has in the `Download` folder as long as the permissions have been granted,
-   otherwise they are
-   requested with an explanation of why they are needed.
-2. A search functionality to allow the user to find PDF files based on the query
-3. Allows the user to star/unstar items for a favorite feature
-4. Allows clicking of individual items to open the PDF using the PSPDFKIT library
+### 1. Main screen
+
+This screen is used for listing all the PDF documents contained in the `Download folder. It shows the following:
+
+- A list of items made by filenames with PDF extension
+- A search field to perform fuzzy search on the items
+- Every item in the list can have a star icon
+- Star/Un-star actions should be supported for every item
+- Starred items should appear at the beginning of the list
+- Tapping on an item will open the PDF
+
+### 2. PDF screen
+
+This screen renders the clicked document using PSPDFKIT. It shows the following:
+
+- The rendered PDF document with vertical page scroll direction of the document
+- A top bar with the filename (extension included)
+- A UI component of your choice to star/un-star the document
+- A floating action button that when pressed will export in the download folder the current page as a single paged PDF.
+  The output of the file name will be “[original-document-name] page x.pdf”
 
 # Prerequisites
 
@@ -23,17 +37,20 @@ UI.
 
 - [Architecture](#architecture)
 - [Libraries](#libraries)
+- [Testing](#testing)
 - [Extras](#extras)
 
 ## Architecture
 
-The app uses the MVVM architecure because it is a nice and simple architecture that makes testing and maintenance
+The app uses the MVVM architecture because it is a nice and simple architecture that makes testing and maintenance
 easier. It was also chosen
 because it is a popular choice meaning a new developer can pick it up easily making for smooth transitions between
 teams. There is also the
 added benefit of using a `ViewModel` to survive configuration changes. `Kotlin Flow` and `Coroutines` have been used to
 monitor data and
-state changes in the app making for a smooth user experience.
+state changes in the app making for a smooth user experience. The full explanation of the architecture used can be found
+[here](https://developer.android.com/topic/architecture) on the official Android developer website. For added ease of
+maintenance and extra abstraction, the repository pattern is also used, which further helps keep things cleaner.
 
 > **_NOTE ON NAVIGATION:_**  The decision to use the previous navigation component as opposed
 > to [Navigation Compose](https://developer.android.com/jetpack/compose) is extremely intentional
@@ -50,23 +67,32 @@ state changes in the app making for a smooth user experience.
 This app makes use of the following libraries:
 
 - [Jetpack](https://developer.android.com/jetpack)🚀
-   - [Viewmodel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Manage UI data to survive
-     configuration changes
-     and is lifecycle-aware
-   - [Compose](https://developer.android.com/jetpack/compose) - Android’s modern toolkit for building native UI.
-   - [Navigation](https://developer.android.com/guide/navigation) - Handle everything needed for in-app navigation
-   - [Room DB](https://developer.android.com/topic/libraries/architecture/room) - Fluent SQLite database access
+    - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Manage UI data to survive
+      configuration changes
+      and is lifecycle-aware
+    - [Compose](https://developer.android.com/jetpack/compose) - Android’s modern toolkit for building native UI.
+    - [Navigation](https://developer.android.com/guide/navigation) - Handle everything needed for in-app navigation
+    - [Room DB](https://developer.android.com/topic/libraries/architecture/room) - Fluent SQLite database access
 - [Dagger Hilt](https://dagger.dev/hilt/) - A fast dependency injector for Android and Java.
 - [PSPDFKit](https://pspdfkit.com/guides/android/) - An SDK for viewing, annotating, editing, and creating PDFs
 - [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines) - Library Support for coroutines
 - [Material Design](https://material.io/develop/android/docs/getting-started/) - build awesome beautiful UIs.🔥🔥
 - [Timber](https://github.com/JakeWharton/timber) - A logger with a small, extensible API which provides utility on top
-  of Android's normal
-  Log class.
+  of Android's normal Log class.
 - [Truth](https://truth.dev/) - A library for performing assertions in tests
 - [Mockk](https://mockk.io/) - A mocking framework for testing in Android
 - [Robolectric ](http://robolectric.org/) - For fast and reliable unit tests to Android.
 - [Turbine](https://github.com/cashapp/turbine) - Turbine is a small testing library for `kotlinx.coroutines Flow`
+
+## Testing
+
+Testing has been done in two ways:
+
+1. There are unit tests to test the logic of the application. To run the tests, refer to the section above.
+2. Three devices have been tested with the application as listed below to cover devices both above and below Android 11:
+    - Samsung Galaxy A02 physical device running Android 11
+    - Pixel 2 API 30 Emulator
+    - Pixel 6 API 27 Emulator
 
 ## Extras
 
@@ -75,6 +101,28 @@ This app makes use of the following libraries:
 The app also uses GitHub actions to build the app and runs whenever a new pull request or merge to the `master` branch
 happens.
 The pipeline also runs unit tests. The status of the build is displayed at the top of this file.
+
+#### Challenges
+
+1. The biggest challenge in the app has been how to handle the favorite feature from the main list while at the same
+   time providing a
+   smooth user experience. One of the things I did was refresh the entire list once the favorite button was clicked for
+   an item but the list
+   appeared to jump. This forced a rethink where I solved it by working on a background thread to save the favorite in
+   the db
+   then update the list in memory once the favorite operation is completed, which triggers a recomposition of the list
+   in a smooth way.
+2. Another challenge was in how to choose between a local db or `SharedPreferences` for the favorite feature considering
+   that the files
+   themselves cannot be modified. Eventually, the decision I made was to use `Room DB` because SQL is quite fast in
+   writing and reading.
+3. Initially, the app was using the `MediaStore` APIs for querying the data from the file system, which worked to some
+   extent but the
+   single-page PDF files exported by the app could not be loaded for some reason. This forced a refactor to use the
+   current `getPdfListFromFile`
+   implementation in the `PdfRepoImpl` class, which works seamlessly although it did need a bit of research in
+   determining a unique key
+   for each file. This ended up being the `canonicalPath` of a file, which is absolute and unique.
 
 ```
 MIT License

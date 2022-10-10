@@ -31,7 +31,7 @@ class PdfRepoImpl @Inject constructor(
     /**
      * This function gets all the files in the download directory
      * Since this method involves querying the file system, it should never run on the main thread. For extra safety,
-     * a try catch is used just in case something goes wrong although it is unlikely
+     * a try catch is used just in case something goes wrong
      *
      * @return a [com.ferdinand.pdftestapp.utils.Resource] wrapper with the outcome of the operation
      * */
@@ -94,7 +94,9 @@ class PdfRepoImpl @Inject constructor(
     /**
      * This function filters the files based on the id of the file, which is actually the canonical path.
      * Since this method involves querying the file system, it should never run on the main thread. For extra safety,
-     * a try catch is used just in case something goes wrong although it is unlikely
+     * a try catch is used just in case something goes wrong
+     *
+     * @param id is the file id
      *
      * @return a [com.ferdinand.pdftestapp.utils.Resource] wrapper with the outcome of the operation
      * */
@@ -112,9 +114,11 @@ class PdfRepoImpl @Inject constructor(
     }
 
     /**
-     * This function filters the files based on the search term typed by the user.
+     * This function filters the files based on the search term typed by the user ignoring the case.
      * Since this method involves querying the file system, it should never run on the main thread. For extra safety,
-     * a try catch is used just in case something goes wrong although it is unlikely
+     * a try catch is used just in case something goes wrong
+     *
+     * @param searchTerm is the query typed by the user
      *
      * @return a [com.ferdinand.pdftestapp.utils.Resource] wrapper with the outcome of the operation
      * */
@@ -160,7 +164,7 @@ class PdfRepoImpl @Inject constructor(
      * coroutine
      *
      * @param pdfFile is the file that is currently opened whose page needs exporting
-     * @param currentPage is the current page the user is viewing of the open file
+     * @param currentPage is the current page the user is viewing of the open file. Note that it is more of an index, which is why 1 is added
      *
      * @return a flowable with the progress and outcome of the operation
      * */
@@ -190,7 +194,7 @@ class PdfRepoImpl @Inject constructor(
 
     /*
     * This function is an extra layer when getting the files to ensure that only those whose path without the file name
-    * ends with the word download, ignoring the case, end up in the list. This works because a user can never name a file
+    * contains the word download, ignoring the case, end up in the list. This works because a user can never name a file
     * to include the forward slash as it is illegal therefore the string after the last forward slash will always be the file name
     * Ignore the case just in case the user has renamed the download folder.
     *

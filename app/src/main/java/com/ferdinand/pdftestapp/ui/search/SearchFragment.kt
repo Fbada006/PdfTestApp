@@ -28,7 +28,7 @@ import com.ferdinand.pdftestapp.viewmodel.PdfViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /*
-* This is the screen that shows the all the pdf files searched by the user and provides star/unstar as well as viewing functionalities
+* This is the screen that shows the all the pdf files searched by the user and provides star/un-star as well as viewing functionalities
 * */
 @AndroidEntryPoint
 @ExperimentalComposeUiApi

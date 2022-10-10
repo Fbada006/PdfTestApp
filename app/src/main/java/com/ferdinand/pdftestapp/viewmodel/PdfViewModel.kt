@@ -80,7 +80,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     /*
     * Query the file system to get all the files. The viewModelScope is used to launch the coroutine because it will be
-    * automatically cleared once this viewmodel is destroyed
+    * automatically cleared once this viewModel is destroyed
     * */
     private fun getAllPdfFiles() {
         mutablePdfQueryState.value = mutablePdfQueryState.value.copy(isLoading = true, error = null)
@@ -106,7 +106,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     /*
     * Save the current page as a single page pdf file. The viewModelScope is used to launch the coroutine because it will be
-    * automatically cleared once this viewmodel is destroyed
+    * automatically cleared once this viewModel is destroyed
     * */
     private fun exportCurrentPageToPdf() {
         val pdfFile = singlePdfState.value.singlePdfData?.toDataModel()
@@ -117,7 +117,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     /*
     * Get the file based on the id. The viewModelScope is used to launch the coroutine because it will be
-    * automatically cleared once this viewmodel is destroyed
+    * automatically cleared once this viewModel is destroyed
     * */
     private fun displayFileDetailsBasedOnId(fileId: String) {
         mutableSinglePdfState.value = mutableSinglePdfState.value.copy(isLoading = true, error = null)
@@ -148,7 +148,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     /*
     * Add or remove a file from db and update the list for the UI. The viewModelScope is used to launch the coroutine because it will be
-    * automatically cleared once this viewmodel is destroyed
+    * automatically cleared once this viewModel is destroyed
     * */
     private fun addOrRemoveFileFromFavoritesAndRefreshList(pdfFile: PdfPresentationFile?) {
         viewModelScope.launch {
@@ -167,7 +167,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
                         }
                     }
                 } catch (exception: Exception) {
-                    // We do not care about the error except to log it and the user will not get an update UI
+                    // We do not care about the error except to log it and the user will not get an updated UI
                     Timber.e("Error saving favourite $exception")
                 }
             }
@@ -176,7 +176,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     /**
      * This is a helper function to quickly modify the list and update the UI. Since it runs inside the try block of the
-     * method to add to favorites, we can know for sure that the file has already been saved to the db.
+     * method to add to favorites, we can know for sure that the file has already been saved without an exception to the db when this runs.
      * Instead of querying the entire list, which makes for a bad jumping UI, we can go ahead and update the isFavourite property of the item
      * added to favorites here, which creates a better animation effect on the UI.
      *
@@ -203,7 +203,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
 
     /*
     * Conduct a search based on the query by the user. The viewModelScope is used to launch the coroutine because it will be
-    * automatically cleared once this viewmodel is destroyed
+    * automatically cleared once this viewModel is destroyed
     * */
     private fun searchFiles() {
         mutableFilteredPdfState.value = mutableFilteredPdfState.value.copy(isLoading = true, error = null, listData = null)
@@ -244,7 +244,7 @@ class PdfViewModel @Inject constructor(private val pdfRepo: PdfRepo) : ViewModel
     }
 
     /*
-    * Keep track of the read permission state
+    * Keep track of the write permission state
     * */
     fun onWritePermissionsStateChanged(newValue: Boolean) {
         this.areWritePermissionsGranted.value = newValue

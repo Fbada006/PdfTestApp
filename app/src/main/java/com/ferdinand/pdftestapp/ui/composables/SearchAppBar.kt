@@ -36,8 +36,8 @@ import com.ferdinand.pdftestapp.models.PdfEvent
  *
  * @param query is the user's search term
  * @param onBackClicked is the function to trigger logic when the user clicks the back button on the bar
- * @param onQueryChanged is the function that updates the viewmodel of the new search term
- * @param handleEvent is the function that updates the viewmodel of the new UI events
+ * @param onQueryChanged is the function that updates the viewModel of the new search term
+ * @param handleEvent is the function that updates the viewModel of the new UI events
  * */
 @ExperimentalComposeUiApi
 @Composable
