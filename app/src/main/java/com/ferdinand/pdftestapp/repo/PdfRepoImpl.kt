@@ -2,6 +2,7 @@ package com.ferdinand.pdftestapp.repo
 
 import android.content.Context
 import android.os.Environment
+import android.webkit.MimeTypeMap
 import androidx.core.net.toUri
 import com.ferdinand.pdftestapp.data.PdfDatabase
 import com.ferdinand.pdftestapp.data.models.DbFavoritePdfFile
@@ -27,6 +28,7 @@ class PdfRepoImpl @Inject constructor(
 ) : PdfRepo {
 
     private val downloadDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    private val pdfMimeType = "application/pdf"
 
     /**
      * This function gets all the files in the download directory
@@ -74,7 +76,8 @@ class PdfRepoImpl @Inject constructor(
                 if (file.isDirectory) {
                     pdfList.addAll(getPdfListFromFile(file))
                 } else {
-                    if (file.name.endsWith(PATH_PDF) && isDownloadData(file.path)) {
+                    val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
+                    if (mimeType == pdfMimeType && isDownloadData(file.path)) {
                         val canonicalPath = file.canonicalPath
                         val pdf = PdfFile(
                             id = canonicalPath,
