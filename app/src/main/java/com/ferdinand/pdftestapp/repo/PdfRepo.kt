@@ -4,7 +4,7 @@ import com.ferdinand.pdftestapp.data.models.DbFavoritePdfFile
 import com.ferdinand.pdftestapp.data.models.PdfFile
 import com.ferdinand.pdftestapp.utils.Resource
 import com.pspdfkit.document.processor.PdfProcessor
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 
 interface PdfRepo {
 

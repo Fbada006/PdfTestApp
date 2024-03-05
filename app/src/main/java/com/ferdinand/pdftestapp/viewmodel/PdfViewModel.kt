@@ -15,7 +15,7 @@ import com.ferdinand.pdftestapp.utils.FileNotFoundException
 import com.ferdinand.pdftestapp.utils.Resource
 import com.pspdfkit.document.processor.PdfProcessor
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

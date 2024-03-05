@@ -6,7 +6,7 @@ buildscript {
         timberVersion = '5.0.1'
         fragmentVersion = "1.5.3"
         roomVersion = "2.4.3"
-        pdfVersion = "8.4.0"
+        pdfVersion = "8.8.0"
         coreKtxVersion = "1.9.0"
         appCompatVersion = "1.5.1"
         lifecycleVersion = "2.5.1"

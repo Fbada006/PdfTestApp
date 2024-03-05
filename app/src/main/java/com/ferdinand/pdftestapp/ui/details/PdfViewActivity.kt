@@ -155,6 +155,7 @@ class PdfViewActivity : AppCompatActivity() {
                                     PdfActivityConfiguration
                                         .Builder(this@PdfViewActivity)
                                         .scrollDirection(PageScrollDirection.VERTICAL)
+                                        .setMeasurementToolsEnabled(true)
                                         .build()
                                 }
 
