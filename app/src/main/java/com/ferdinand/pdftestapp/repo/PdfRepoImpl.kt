@@ -77,7 +77,7 @@ class PdfRepoImpl @Inject constructor(
                     pdfList.addAll(getPdfListFromFile(file))
                 } else {
                     val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
-                    if (mimeType == pdfMimeType && isDownloadData(file.path)) {
+                    if (mimeType == pdfMimeType) {
                         val canonicalPath = file.canonicalPath
                         val pdf = PdfFile(
                             id = canonicalPath,
@@ -195,29 +195,7 @@ class PdfRepoImpl @Inject constructor(
         return dbFile != null
     }
 
-    /*
-    * This function is an extra layer when getting the files to ensure that only those whose path without the file name
-    * contains the word download, ignoring the case, end up in the list. This works because a user can never name a file
-    * to include the forward slash as it is illegal therefore the string after the last forward slash will always be the file name
-    * Ignore the case just in case the user has renamed the download folder.
-    *
-    * The method checks that the path contains the word download just in case there are folders inside the download
-    * folder itself so this makes the app a bit more robust
-    *
-    * */
-    private fun isDownloadData(data: String?): Boolean {
-        return if (data != null) {
-            val pathStringWithoutFileName = data.substringBeforeLast(DELIMITER_FORWARD_SLASH_CHAR)
-            pathStringWithoutFileName.contains(SUFFIX_DOWNLOAD, ignoreCase = true)
-        } else {
-            false
-        }
-    }
-
     companion object {
-        private const val DELIMITER_FORWARD_SLASH_CHAR = '/'
-        private const val SUFFIX_DOWNLOAD = "download"
         private const val EXTENSION_PDF = "pdf"
-        private const val PATH_PDF = ".pdf"
     }
 }
