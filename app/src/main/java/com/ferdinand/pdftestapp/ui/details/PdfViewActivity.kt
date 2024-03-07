@@ -48,6 +48,7 @@ import com.pspdfkit.configuration.activity.PdfActivityConfiguration
 import com.pspdfkit.configuration.page.PageScrollDirection
 import com.pspdfkit.jetpack.compose.DocumentView
 import com.pspdfkit.jetpack.compose.ExperimentalPSPDFKitApi
+import com.pspdfkit.jetpack.compose.getDefaultDocumentManager
 import com.pspdfkit.jetpack.compose.rememberDocumentState
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -160,18 +161,19 @@ class PdfViewActivity : AppCompatActivity() {
                                 }
 
                                 val documentState = rememberDocumentState(documentUri, pdfActivityConfiguration)
-                                val currentPage by remember(documentState.currentPage) { mutableStateOf(documentState.currentPage) }
-                                viewModel.onCurrentPageChanged(currentPage)
+//                                val currentPage by remember(documentState.currentPage) { mutableStateOf(documentState.currentPage) }
+//                                viewModel.onCurrentPageChanged(currentPage)
 
                                 DocumentView(
                                     documentState = documentState,
                                     modifier = Modifier
-                                        .padding(dimensionResource(id = R.dimen.size_4))
+                                        .padding(dimensionResource(id = R.dimen.size_4)),
+                                    documentManager = getDefaultDocumentManager()
                                 )
 
-                                LaunchedEffect(currentPage) {
-                                    documentState.scrollToPage(currentPage)
-                                }
+//                                LaunchedEffect(currentPage) {
+//                                    documentState.scrollToPage(currentPage)
+//                                }
                             }
 
                             pdfQueryState.error?.let {
